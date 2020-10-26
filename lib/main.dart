@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:to_do_application/classes/toDo.dart';
+import 'package:to_do_application/widgets/bottomMenu.dart';
 import 'package:to_do_application/widgets/extendBottomSheet.dart';
 import 'dbhelper.dart';
 import 'package:to_do_application/widgets/task.dart';
@@ -55,6 +56,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    String textForDrawer = DateTime.now().hour >= 18
+        ? 'Добрый вечер!'
+        : DateTime.now().hour > 12
+            ? 'Добрый день!'
+            : 'Доброе утро!';
+    AssetImage photo = DateTime.now().hour >= 18
+        ? AssetImage('assets/ge.jpg')
+        : DateTime.now().hour > 12
+            ? AssetImage('assets/gd.jpg')
+            : AssetImage('assets/gm.jpg');
+    DateTime selectedDate = DateTime.now();
+
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -63,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Stack(
                 children: [
                   Positioned(
-                      bottom: 12.0, left: 16.0, child: Text('Добрый день!'))
+                      bottom: 12.0, left: 16.0, child: Text(textForDrawer))
                 ],
               ),
               margin: EdgeInsets.zero,
@@ -71,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.fill,
-                  image: AssetImage('assets/gd.jpg'),
+                  image: photo,
                 ),
               ),
             ),
@@ -99,6 +112,22 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.deepOrange,
+        child: Icon(Icons.add),
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              builder: (ctx) {
+                return BottomMenu(MediaQuery.of(context).size.height * 0.4, ctx,
+                    (ToDo newTask) {
+                  setState(() {
+                    tasks.insert(0, newTask);
+                  });
+                });
+              });
+        },
+      ),
       appBar: AppBar(
         elevation: 0.0,
         title: Text(widget.title, style: TextStyle(color: Colors.black)),
@@ -116,11 +145,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   .toList(),
             ),
           ),
-          ExtendBottomSheet((ToDo newTask) {
-            setState(() {
-              tasks.insert(0, newTask);
-            });
-          })
+          // ExtendBottomSheet((ToDo newTask) {
+          //   setState(() {
+          //     tasks.insert(0, newTask);
+          //   });
+          // })
         ]),
       ),
     );

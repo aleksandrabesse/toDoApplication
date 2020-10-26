@@ -37,11 +37,26 @@ class _ExtendBottomSheetState extends State<ExtendBottomSheet>
     widget._adder(newtask);
   }
 
+  _selectDate(BuildContext ctx) async {
+    final DateTime picked = await showDatePicker(
+        context: ctx,
+        initialDate: selectedDate,
+        firstDate: DateTime(DateTime.now().year),
+        lastDate: DateTime(2025));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
+  DateTime selectedDate = DateTime.now();
+  String currentDate = 'Дата не выбрана';
   @override
   Widget build(BuildContext context) {
     final double maxHeight = MediaQuery.of(context).size.height * 0.3;
     final double minHeight = MediaQuery.of(context).size.height * 0.08;
-    TextField _enter = TextField(
+    Widget tx = SingleChildScrollView(
+        child: TextField(
       controller: _todo,
       onSubmitted: (text) {
         _add();
@@ -49,28 +64,59 @@ class _ExtendBottomSheetState extends State<ExtendBottomSheet>
       decoration: InputDecoration(
         hintText: 'Сделать...',
       ),
-    );
+    ));
+    Widget _enter = tx;
     void _handleDragEnd(DragEndDetails details) {
       if (_controller.isAnimating ||
-          _controller.status == AnimationStatus.completed) return;
+          _controller.status == AnimationStatus.completed) {
+        if (_controller.status == AnimationStatus.completed) if (details
+                    .velocity.pixelsPerSecond.dy /
+                maxHeight ==
+            0.0)
+          _enter = tx;
+        else
+          _enter = SingleChildScrollView(
+            child: Column(
+              children: [
+                tx,
+                tx,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MaterialButton(
+                        child: Text('Выбрать дату'),
+                        onPressed: () {
+                          _selectDate(context);
+                          currentDate = selectedDate.day.toString() +
+                              ' ' +
+                              selectedDate.month.toString();
+                        }),
+                    Text(currentDate)
+                  ],
+                ),
+              ],
+            ),
+          );
+
+        return;
+      }
 
       final double flingVelocity = details.velocity.pixelsPerSecond.dy /
           maxHeight; //<-- calculate the velocity of the gesture
-      if (flingVelocity < 0.0)
+      if (flingVelocity < 0.0) {
         _controller.fling(
             velocity:
                 math.max(2.0, -flingVelocity)); //<-- either continue it upwards
-
-      else if (flingVelocity > 0.0)
+      } else if (flingVelocity > 0.0) {
         _controller.fling(
             velocity:
                 math.min(-2.0, -flingVelocity)); //<-- or continue it downwards
-
-      else
+      } else {
         _controller.fling(
             velocity: _controller.value < 0.5
                 ? -2.0
                 : 2.0); //<-- or just continue to whichever edge is closer
+      }
     }
 
     return AnimatedBuilder(
@@ -81,7 +127,6 @@ class _ExtendBottomSheetState extends State<ExtendBottomSheet>
               left: 0,
               right: 0,
               bottom: 0,
-              
               child: GestureDetector(
                 onTap: _toggle,
                 onVerticalDragUpdate: (details) {
