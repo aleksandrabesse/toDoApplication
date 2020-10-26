@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/widgets/extendBottomSheet.dart';
 import 'dbhelper.dart';
 import 'package:to_do_application/widgets/task.dart';
+// import 'package:to_do_application/widgets/task2.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +18,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        appBarTheme: AppBarTheme(color: Colors.transparent),
+        appBarTheme: AppBarTheme(
+            color: Colors.transparent,
+            iconTheme: IconThemeData(color: Colors.black)),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Входящие'),
@@ -42,40 +46,82 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
   void initState() {
     dbHelper.queryAllRows().then((value) => value.forEach((element) {
-      setState(() {
-        tasks.insert(0, ToDo.fromMap(element));
-      });
-    }));
+          setState(() {
+            tasks.insert(0, ToDo.fromMap(element));
+          });
+        }));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              child: Stack(
+                children: [
+                  Positioned(
+                      bottom: 12.0, left: 16.0, child: Text('Добрый день!'))
+                ],
+              ),
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.zero,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.fill,
+                  image: AssetImage('assets/gd.jpg'),
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Проекты'),
+              trailing: GestureDetector(
+                onTap: () {
+                  // TODO
+                },
+                child: Icon(Icons.add),
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            Divider(),
+            ListTile(
+              title: Text('Item 2'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         elevation: 0.0,
         title: Text(widget.title, style: TextStyle(color: Colors.black)),
       ),
-      body: Center(
-        child: SafeArea(
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: tasks.map((e) => Task(e, (ToDo cur){ setState(() {
-                    tasks.remove(cur);
-                  });})).toList(),
-                ),
-              ),
-              ExtendBottomSheet((ToDo newTask) {
-                setState(() {
-                  tasks.add(newTask);
-                });
-              })
-            ],
+      body: SafeArea(
+        child: Stack(fit: StackFit.expand, children: [
+          SingleChildScrollView(
+            child: Column(
+              children: tasks
+                  .map((e) => Task(e, (ToDo cur) {
+                        setState(() {
+                          tasks.remove(cur);
+                        });
+                      }))
+                  .toList(),
+            ),
           ),
-        ),
+          ExtendBottomSheet((ToDo newTask) {
+            setState(() {
+              tasks.insert(0, newTask);
+            });
+          })
+        ]),
       ),
     );
   }

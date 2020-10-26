@@ -81,6 +81,7 @@ class _ExtendBottomSheetState extends State<ExtendBottomSheet>
               left: 0,
               right: 0,
               bottom: 0,
+              
               child: GestureDetector(
                 onTap: _toggle,
                 onVerticalDragUpdate: (details) {
