@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/widgets/bottomMenu.dart';
-import 'package:to_do_application/widgets/extendBottomSheet.dart';
 import 'dbhelper.dart';
 import 'package:to_do_application/widgets/task.dart';
 // import 'package:to_do_application/widgets/task2.dart';
@@ -45,10 +45,17 @@ class _MyHomePageState extends State<MyHomePage> {
     ToDo('Добавить важную, но не срочную задачу', imp: 2),
     ToDo('Добавить срочную задачу', imp: 3)
   ];
+  List<Project> proj = [];
   void initState() {
-    dbHelper.queryAllRows().then((value) => value.forEach((element) {
+    dbHelper.queryAllRows('toDo').then((value) => value.forEach((element) {
           setState(() {
             tasks.insert(0, ToDo.fromMap(element));
+          });
+        }));
+    dbHelper.queryAllRows('project').then((value) => value.forEach((element) {
+          print(element['name']);
+          setState(() {
+            proj.add(Project.fromMap(element));
           });
         }));
     super.initState();
@@ -66,7 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
         : DateTime.now().hour > 12
             ? AssetImage('assets/gd.jpg')
             : AssetImage('assets/gm.jpg');
-    DateTime selectedDate = DateTime.now();
 
     return Scaffold(
       drawer: Drawer(
@@ -102,13 +108,13 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Divider(),
-            ListTile(
-              title: Text('Item 2'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
+            ...proj.map((e) {
+              return ListTile(
+                title: Text(e.getNameProj),
+            
+                leading: Icon(IconData(e.getIconroj,fontFamily: 'MaterialIcons')),
+              );
+            }).toList()
           ],
         ),
       ),
@@ -121,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
               builder: (ctx) {
                 return BottomMenu(MediaQuery.of(context).size.height * 0.4, ctx,
                     (ToDo newTask) {
-                      print(Icons.add.codePoint);
+                  // print(Icons.add.codePoint);
                   setState(() {
                     tasks.insert(0, newTask);
                   });

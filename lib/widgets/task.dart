@@ -28,7 +28,7 @@ class _TaskState extends State<Task> {
       onLongPress: () {
         setState(() {
           widget.delete(widget.task);
-          DatabaseHelper.instance.delete(widget.task.toDoID);
+          DatabaseHelper.instance.delete(widget.task.toDoID,'toDo');
         });
       },
       child: ListTile(
