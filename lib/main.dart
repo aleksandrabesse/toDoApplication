@@ -121,6 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
               builder: (ctx) {
                 return BottomMenu(MediaQuery.of(context).size.height * 0.4, ctx,
                     (ToDo newTask) {
+                      print(Icons.add.codePoint);
                   setState(() {
                     tasks.insert(0, newTask);
                   });
