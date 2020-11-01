@@ -19,7 +19,7 @@ class _BottomMenuState extends State<BottomMenu> {
 
   void _add() async {
     newToDo.changeToDoProj = 0;
-    final int id = await DatabaseHelper.instance.insert(newToDo,'toDo');
+    final int id = await DatabaseHelper.instance.insertTask(newToDo);
     newToDo.changeToDoID = id;
     widget._adder(newToDo);
     print(newToDo);

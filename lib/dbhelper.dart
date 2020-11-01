@@ -1,11 +1,11 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'classes/toDo.dart';
+import 'package:to_do_application/classes/proj.dart';
 
 class DatabaseHelper {
   static final _databaseName = "toDo.db";
   static final _databaseVersion = 1;
-
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -29,7 +29,8 @@ class DatabaseHelper {
 
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
-    await db.execute('''CREATE TABLE project (id INTEGER PRIMARY KEY
+    await db
+        .execute('''CREATE TABLE project (id INTEGER PRIMARY KEY AUTOINCREMENT
       ,name TEXT NOT NULL,
             icon INTEGER NOT NULL
        )''');
@@ -43,10 +44,8 @@ class DatabaseHelper {
             FOREIGN KEY (proj) REFERENCES project(id)
           )
           ''');
-       await db.insert('project', {
-      'name': 'Входящие',
-      'icon': 58771
-    });
+    Project insert = Project('Входящие', icon: 58771);
+    await db.insert('project', insert.toMap());
   }
 
   // Helper methods
@@ -54,15 +53,37 @@ class DatabaseHelper {
   // Inserts a row in the database where each key in the Map is a column name
   // and the value is the column value. The return value is the id of the
   // inserted row.
-  Future<int> insert(ToDo task,String table) async {
+  Future<int> insertTask(task) async {
     Database db = await instance.database;
-    return await db.insert(table, {
-      'name': task.toDoName,
-      'important': task.toDoImportant,
-      'date': task.toDoDate.toString(),
-      'proj': task.toDoProj
-    });
+    Map<String, dynamic> t = task.toMap();
+    String sqlFor = "INSERT INTO toDo (name,important,date,proj) VALUES ('" +
+        t['name'] +
+        "'," +
+        t['important'].toString() +
+        ",'" +
+        t['date'] +
+        "'," +
+        t['proj'].toString() +
+        ')';
+
+    return await db.rawInsert(sqlFor);
   }
+
+  Future<int> insertProject(task) async {
+    Database db = await instance.database;
+    Map<String, dynamic> t = task.toMap();
+    String sqlFor = "INSERT INTO project (name,icon) VALUES ('" +
+        t['name'].toString() +
+        "'," +
+        t['icon'].toString()+
+        ')';
+
+    return await db.rawInsert(sqlFor);
+  }
+  // Future<int> insert(task, String table) async {
+  //   Database db = await instance.database;
+  //   return await db.insert(table, task.toMap());
+  // }
 
   // All of the rows are returned as a list of maps, where each map is
   // a key-value list of columns.
@@ -72,8 +93,9 @@ class DatabaseHelper {
   }
 
   // Queries rows based on the argument received
-  Future<List<Map<String, dynamic>>> queryRows(name,table) async {
+  Future<List<Map<String, dynamic>>> queryRows(name, table) async {
     Database db = await instance.database;
+
     return await db.query(table, where: "name LIKE '%$name%'");
   }
 
@@ -87,7 +109,7 @@ class DatabaseHelper {
 
   // We are assuming here that the id column in the map is set. The other
   // column values will be used to update the row.
-  Future<int> update(ToDo task, String table) async {
+  Future<int> update(task, String table) async {
     Database db = await instance.database;
     int id = task.toMap()['id'];
     return await db

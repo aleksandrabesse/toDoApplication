@@ -3,6 +3,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/widgets/bottomMenu.dart';
+import 'package:to_do_application/widgets/newProj.dart';
 import 'dbhelper.dart';
 import 'package:to_do_application/widgets/task.dart';
 // import 'package:to_do_application/widgets/task2.dart';
@@ -61,6 +62,11 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  void _add(Project newP) async {
+    final int id = await DatabaseHelper.instance.insertProject(newP);
+    newP.changeIdProj = id;
+  }
+
   @override
   Widget build(BuildContext context) {
     String textForDrawer = DateTime.now().hour >= 18
@@ -98,7 +104,22 @@ class _MyHomePageState extends State<MyHomePage> {
               title: Text('Проекты'),
               trailing: GestureDetector(
                 onTap: () {
-                  // TODO
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          insetAnimationDuration: Duration(milliseconds: 500),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0)),
+                          child: NewProj((String name, int icon) {
+                            Project newP = Project(name, icon: icon);
+                            _add(newP);
+                            setState(() {
+                              proj.add(newP);
+                            });
+                          }),
+                        );
+                      });
                 },
                 child: Icon(Icons.add),
               ),
@@ -108,13 +129,17 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Divider(),
-            ...proj.map((e) {
-              return ListTile(
-                title: Text(e.getNameProj),
-            
-                leading: Icon(IconData(e.getIconroj,fontFamily: 'MaterialIcons')),
-              );
-            }).toList()
+            SingleChildScrollView(
+              child: Column(children: [
+                ...proj.map((e) {
+                  return ListTile(
+                    title: Text(e.getNameProj),
+                    leading: Icon(
+                        IconData(e.getIconroj, fontFamily: 'MaterialIcons')),
+                  );
+                }).toList()
+              ]),
+            )
           ],
         ),
       ),
