@@ -44,8 +44,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final dbHelper = DatabaseHelper.instance;
   List<ToDo> tasks = [
-    ToDo('Добавить задачу', imp: 0, proj: 0),
-    ToDo('Добавить не очень важную задачу', imp: 1, proj: -1),
+    ToDo('Добавить задачу', imp: 0),
+    ToDo('Добавить не очень важную задачу', imp: 1),
     ToDo('Добавить важную, но не срочную задачу', imp: 2),
     ToDo('Добавить срочную задачу', imp: 3)
   ];

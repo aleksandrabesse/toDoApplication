@@ -31,7 +31,7 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
             label: Text(''),
             // selectedColor: Colors.teal[100],
             // backgroundColor: Colors.white,
-            avatar: Icon(IconData(item, fontFamily: 'MaterialIcons')),
+            avatar:Icon(IconData(item, fontFamily: 'MaterialIcons')),
             selected: selectedChoices[icons.indexOf(item)],
             onSelected: (bool selected) {
               selectedChoices[icons.indexOf(widget.chooise)] = false;

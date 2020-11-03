@@ -75,7 +75,7 @@ class DatabaseHelper {
     String sqlFor = "INSERT INTO project (name,icon) VALUES ('" +
         t['name'].toString() +
         "'," +
-        t['icon'].toString()+
+        t['icon'].toString() +
         ')';
 
     return await db.rawInsert(sqlFor);
@@ -105,6 +105,11 @@ class DatabaseHelper {
     Database db = await instance.database;
     return Sqflite.firstIntValue(
         await db.rawQuery('SELECT COUNT(*) FROM $table'));
+  }
+
+  Future<List<Map<String, dynamic>>> getForeignKey(int id) async {
+    Database db = await instance.database;
+    return db.rawQuery('SELECT icon FROM project where id==$id');
   }
 
   // We are assuming here that the id column in the map is set. The other

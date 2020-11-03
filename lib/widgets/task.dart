@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/dbhelper.dart';
 
@@ -8,58 +7,72 @@ class Task extends StatefulWidget {
   @override
   final ToDo task;
   final Function delete;
-  Task(this.task, this.delete);
+  int icon=1;
+  Task(this.task, this.delete) {}
   _TaskState createState() => _TaskState();
 }
 
 class _TaskState extends State<Task> {
+  final dbHelper = DatabaseHelper.instance;
   String project = '';
-  String getProject() {
-    if (widget.task.toDoProj == 0)
-      return 'Учеба';
-    else
-      return 'Входящие';
+  List<int> k = List();
+  void initState() {
+// dbHelper.getForeignKey(widget.task.toDoID).then((value) => print(value[0]['icon'].toString() + widget.task.toDoName));
+    super.initState();
+  }
+
+  Future<void> getKey() async {
+    dbHelper.getForeignKey(widget.task.toDoID).then((value) {
+      setState(() {
+        widget.icon = value[0]['icon'];
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    int _color = widget.task.toDoImportant;
-    return GestureDetector(
-      onLongPress: () {
-        setState(() {
-          widget.delete(widget.task);
-          DatabaseHelper.instance.delete(widget.task.toDoID,'toDo');
-        });
-      },
-      child: ListTile(
-        subtitle: Text(widget.task.toDoDate.day.toString() +
-            '.' +
-            widget.task.toDoDate.month.toString()),
-        title: Text(widget.task.toDoName),
-        trailing: GestureDetector(
-            child: Container(
-          constraints: BoxConstraints(
-            maxWidth: 0.3 * MediaQuery.of(context).size.width,
-            maxHeight: MediaQuery.of(context).size.height,
-            minWidth: 0.1 * MediaQuery.of(context).size.width,
-          ),
-          padding: EdgeInsets.all(2.5),
-          child: Text(
-            getProject(),
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
-          ),
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(166, 71, 36, 65),
-            border:
-                Border.all(color: Color.fromRGBO(166, 71, 36, 65), width: 1.0),
-            borderRadius: BorderRadius.circular(5.0),
-          ),
-        )),
-        leading: GestureDetector(
-          onTap: () {},
-          child: Icon(LineAwesomeIcons.circle),
-        ),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height*0.093,
+      width: MediaQuery.of(context).size.width,
+      child: FutureBuilder(
+        builder: (context, projectSnap) {
+          if (projectSnap.connectionState == ConnectionState.none &&
+              projectSnap.hasData == null) {
+            //print('project snapshot data is: ${projectSnap.data}');
+            return CircularProgressIndicator();
+          } else
+            return GestureDetector(
+              onLongPress: () {
+                setState(() {
+                  widget.delete(widget.task);
+                  DatabaseHelper.instance.delete(widget.task.toDoID, 'toDo');
+                });
+              },
+              child: ListTile(
+                subtitle: Text(widget.task.toDoDate.day.toString() +
+                    '.' +
+                    widget.task.toDoDate.month.toString()),
+                title: Text(widget.task.toDoName),
+                trailing:
+                    Icon(IconData(widget.icon, fontFamily: 'MaterialIcons')),
+                leading: GestureDetector(
+                  onTap: () {
+                    if (widget.icon == -1) print(12);
+                    print(widget.icon);
+                  },
+                  child: Icon(IconData(59744, fontFamily: 'MaterialIcons'),
+                      color: widget.task.toDoImportant == 3
+                          ? Colors.red
+                          : widget.task.toDoImportant == 2
+                              ? Colors.orange
+                              : widget.task.toDoImportant == 1
+                                  ? Colors.green
+                                  : Colors.grey),
+                ),
+              ),
+            );
+        },
+        future: getKey(),
       ),
     );
   }
