@@ -52,6 +52,7 @@ class _HelpDrawerState extends State<HelpDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
+        padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
             child: Stack(
@@ -69,6 +70,7 @@ class _HelpDrawerState extends State<HelpDrawer> {
             ),
           ),
           ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal:8.0),
             title: Text('Проекты'),
             trailing: GestureDetector(
               onTap: () {
@@ -94,9 +96,12 @@ class _HelpDrawerState extends State<HelpDrawer> {
           SizedBox(
             height: MediaQuery.of(context).size.height,
             child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal:8.0),
+              
               itemCount: proj.length,
               itemBuilder: (context, index) {
                 return ListTile(
+                  contentPadding: EdgeInsets.zero,
                   title: Text(proj[index].getNameProj),
                   leading: Icon(
                     IconData(proj[index].getIconroj,

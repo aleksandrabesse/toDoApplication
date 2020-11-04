@@ -21,7 +21,25 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      darkTheme: ThemeData(
+        floatingActionButtonTheme:
+            FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
+        textTheme: TextTheme(body1: TextStyle(color: Colors.white)),
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+        brightness: Brightness.dark,
+        appBarTheme: AppBarTheme(
+            color: Colors.transparent,
+            iconTheme: IconThemeData(color: Colors.black)),
+      ),
+      themeMode: ThemeMode.system,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        textTheme: TextTheme(body1: TextStyle(color: Colors.black)),
+        floatingActionButtonTheme:
+            FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
+        brightness: Brightness.light,
         primarySwatch: Colors.blue,
         appBarTheme: AppBarTheme(
             color: Colors.transparent,
@@ -56,17 +74,17 @@ class _MyHomePageState extends State<MyHomePage> {
             tasks.insert(0, ToDo.fromMap(element));
           });
         }));
-    
+
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: HelpDrawer(),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepOrange,
+        backgroundColor:
+            Theme.of(context).floatingActionButtonTheme.backgroundColor,
         child: Icon(Icons.add),
         onPressed: () {
           showModalBottomSheet(
@@ -82,8 +100,12 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
       appBar: AppBar(
+        iconTheme: Theme.of(context).iconTheme,
+        textTheme: Theme.of(context).textTheme,
         elevation: 0.0,
-        title: Text(widget.title, style: TextStyle(color: Colors.black)),
+        title: Text(
+          widget.title,
+        ),
       ),
       body: SafeArea(
         child: Stack(fit: StackFit.expand, children: [
