@@ -103,9 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
         iconTheme: Theme.of(context).iconTheme,
         textTheme: Theme.of(context).textTheme,
         elevation: 0.0,
-        title: Text(
-          widget.title,
-        ),
+        title: Text(widget.title,),
       ),
       body: SafeArea(
         child: Stack(fit: StackFit.expand, children: [

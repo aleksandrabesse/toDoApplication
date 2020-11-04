@@ -63,6 +63,8 @@ class _HelpDrawerState extends State<HelpDrawer> {
             margin: EdgeInsets.zero,
             padding: EdgeInsets.zero,
             decoration: BoxDecoration(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+              boxShadow: [BoxShadow(blurRadius: 6.0, offset: Offset(0.0,2.0))],
               image: DecorationImage(
                 fit: BoxFit.fill,
                 image: photo,
@@ -70,7 +72,7 @@ class _HelpDrawerState extends State<HelpDrawer> {
             ),
           ),
           ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal:8.0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
             title: Text('Проекты'),
             trailing: GestureDetector(
               onTap: () {
@@ -96,8 +98,7 @@ class _HelpDrawerState extends State<HelpDrawer> {
           SizedBox(
             height: MediaQuery.of(context).size.height,
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal:8.0),
-              
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               itemCount: proj.length,
               itemBuilder: (context, index) {
                 return ListTile(
