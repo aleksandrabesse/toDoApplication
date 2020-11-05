@@ -64,18 +64,23 @@ class _BottomMenuState extends State<BottomMenu> {
                 ),
               ),
             ),
-            Text('Выбор проекта'),
-            MaterialButton(
-                child: isSelected
-                    ? Text(selectedDate.day.toString() +
-                        '.' +
-                        selectedDate.month.toString() +
-                        '.' +
-                        selectedDate.year.toString())
-                    : Text('Выбрать дату'),
-                onPressed: () {
-                  _selectDate(context);
-                }),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text('Выбрать проект'),
+                MaterialButton(
+                    child: isSelected
+                        ? Text(selectedDate.day.toString() +
+                            '.' +
+                            selectedDate.month.toString() +
+                            '.' +
+                            selectedDate.year.toString())
+                        : Text('Выбрать дату'),
+                    onPressed: () {
+                      _selectDate(context);
+                    }),
+              ],
+            ),
             ToggleSwitch(
               labels: ['0', '1', '2', '3'],
               initialLabelIndex: newToDo.toDoImportant,
