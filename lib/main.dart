@@ -78,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,22 +89,30 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
         onPressed: () {
           showModalBottomSheet(
-              context: context,
-              builder: (ctx) {
-                return BottomMenu(MediaQuery.of(context).size.height * 0.4, ctx,
+            isScrollControlled: true,
+            context: context,
+            builder: (ctx) {
+              return SingleChildScrollView(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: BottomMenu(MediaQuery.of(context).size.height * 0.4, ctx,
                     (ToDo newTask) {
                   setState(() {
                     tasks.insert(0, newTask);
                   });
-                });
-              });
+                }),
+              );
+            },
+            
+          );
         },
       ),
       appBar: AppBar(
         iconTheme: Theme.of(context).iconTheme,
         textTheme: Theme.of(context).textTheme,
         elevation: 0.0,
-        title: Text(widget.title,),
+        title: Text(
+          widget.title,
+        ),
       ),
       body: SafeArea(
         child: Stack(fit: StackFit.expand, children: [

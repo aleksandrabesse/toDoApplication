@@ -47,13 +47,18 @@ class _BottomMenuState extends State<BottomMenu> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextField(
-              controller: tx,
-              onSubmitted: (text) {
-                newToDo.changeToDoName = tx.text;
-              },
-              decoration: InputDecoration(
-                hintText: 'Сделать...',
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
+              child: TextField(
+                controller: tx,
+                onSubmitted: (text) {
+                  newToDo.changeToDoName = tx.text;
+                },
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Сделать...',
+                ),
               ),
             ),
             Text('Выбор проекта'),
@@ -74,7 +79,7 @@ class _BottomMenuState extends State<BottomMenu> {
             ),
             ToggleSwitch(
               labels: ['0', '1', '2', '3'],
-              initialLabelIndex: 0,
+              initialLabelIndex: newToDo.toDoImportant,
               activeBgColors: [
                 Colors.grey,
                 Colors.green,

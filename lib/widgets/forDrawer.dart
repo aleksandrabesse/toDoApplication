@@ -52,7 +52,6 @@ class _HelpDrawerState extends State<HelpDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
             child: Stack(
@@ -64,7 +63,7 @@ class _HelpDrawerState extends State<HelpDrawer> {
             padding: EdgeInsets.zero,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
-              boxShadow: [BoxShadow(blurRadius: 6.0, offset: Offset(0.0,2.0))],
+              boxShadow: [BoxShadow(blurRadius: 6.0)],
               image: DecorationImage(
                 fit: BoxFit.fill,
                 image: photo,
@@ -96,7 +95,7 @@ class _HelpDrawerState extends State<HelpDrawer> {
           ),
           Divider(),
           SizedBox(
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery.of(context).size.height * 0.85,
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               itemCount: proj.length,
@@ -119,7 +118,7 @@ class _HelpDrawerState extends State<HelpDrawer> {
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );
