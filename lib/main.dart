@@ -93,7 +93,8 @@ class _MyHomePageState extends State<MyHomePage> {
             context: context,
             builder: (ctx) {
               return SingleChildScrollView(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: BottomMenu(MediaQuery.of(context).size.height * 0.4, ctx,
                     (ToDo newTask) {
                   setState(() {
@@ -102,7 +103,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 }),
               );
             },
-            
           );
         },
       ),

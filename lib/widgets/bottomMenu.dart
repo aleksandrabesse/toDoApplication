@@ -16,7 +16,7 @@ class _BottomMenuState extends State<BottomMenu> {
   ToDo newToDo = ToDo('Введите задачу');
   TextEditingController tx = TextEditingController();
   DateTime selectedDate = DateTime.now();
-
+  bool isSelected = false;
   void _add() async {
     newToDo.changeToDoProj = 0;
     final int id = await DatabaseHelper.instance.insertTask(newToDo);
@@ -26,16 +26,18 @@ class _BottomMenuState extends State<BottomMenu> {
   }
 
   _selectDate(BuildContext ctx) async {
-    final DateTime picked = await showDatePicker(
-        context: ctx,
-        initialDate: selectedDate,
-        firstDate: DateTime(DateTime.now().year),
-        lastDate: DateTime(2025));
-    if (picked != null && picked != selectedDate)
+    await showDatePicker(
+            context: ctx,
+            initialDate: selectedDate,
+            firstDate: DateTime(DateTime.now().year),
+            lastDate: DateTime(2025))
+        .then((value) {
       setState(() {
-        selectedDate = picked;
+        isSelected = true;
+        selectedDate = value;
         newToDo.changeToDoDate = selectedDate;
       });
+    });
   }
 
   @override
@@ -50,7 +52,8 @@ class _BottomMenuState extends State<BottomMenu> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                  color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10)),
               child: TextField(
                 controller: tx,
                 onSubmitted: (text) {
@@ -62,21 +65,17 @@ class _BottomMenuState extends State<BottomMenu> {
               ),
             ),
             Text('Выбор проекта'),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                MaterialButton(
-                    child: Text('Выбрать дату'),
-                    onPressed: () {
-                      _selectDate(context);
-                    }),
-                Text(selectedDate.day.toString() +
-                    '.' +
-                    selectedDate.month.toString() +
-                    '.' +
-                    selectedDate.year.toString()),
-              ],
-            ),
+            MaterialButton(
+                child: isSelected
+                    ? Text(selectedDate.day.toString() +
+                        '.' +
+                        selectedDate.month.toString() +
+                        '.' +
+                        selectedDate.year.toString())
+                    : Text('Выбрать дату'),
+                onPressed: () {
+                  _selectDate(context);
+                }),
             ToggleSwitch(
               labels: ['0', '1', '2', '3'],
               initialLabelIndex: newToDo.toDoImportant,
