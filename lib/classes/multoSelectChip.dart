@@ -12,10 +12,9 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
   List<bool> selectedChoices = List();
   List<int> icons = List();
   void initState() {
-    for (int i = 58712; i <= 60158; i += 3) {
+    for (int i = 58712; i <= 60158; i += 9) {
       icons.add(i);
       selectedChoices.add(false);
-      // Icon(IconData(i, fontFamily: 'MaterialIcons')));
     }
     selectedChoices[0] = true;
     super.initState();
@@ -29,8 +28,6 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
           padding: const EdgeInsets.all(2.0),
           child: ChoiceChip(
             label: Text(''),
-            // selectedColor: Colors.teal[100],
-            // backgroundColor: Colors.white,
             avatar:Icon(IconData(item, fontFamily: 'MaterialIcons')),
             selected: selectedChoices[icons.indexOf(item)],
             onSelected: (bool selected) {

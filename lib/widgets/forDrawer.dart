@@ -72,7 +72,10 @@ class _HelpDrawerState extends State<HelpDrawer> {
           ),
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-            title: Text('Проекты'),
+            title: Text(
+              'Проекты',
+              style: Theme.of(context).textTheme.body1,
+            ),
             trailing: GestureDetector(
               onTap: () {
                 showDialog(
@@ -102,19 +105,22 @@ class _HelpDrawerState extends State<HelpDrawer> {
               itemBuilder: (context, index) {
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(proj[index].getNameProj),
+                  title: Text(
+                    proj[index].getNameProj,
+                    style: Theme.of(context).textTheme.body1,
+                  ),
                   leading: Icon(
                     IconData(proj[index].getIconroj,
                         fontFamily: 'MaterialIcons'),
                   ),
                   trailing: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _delete(proj[index]);
-                      });
-                    },
-                    child: Icon(Icons.delete, color: Colors.grey[400]),
-                  ),
+                      onTap: () {
+                        if (index != 0)
+                          setState(() {
+                            _delete(proj[index]);
+                          });
+                      },
+                      child: Icon(Icons.delete, color: Colors.grey[400])),
                 );
               },
             ),

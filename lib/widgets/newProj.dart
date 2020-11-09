@@ -18,6 +18,7 @@ class _NewProjState extends State<NewProj> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TextField(
               controller: _tx,

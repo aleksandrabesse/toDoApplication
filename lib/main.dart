@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/widgets/bottomMenu.dart';
 import 'package:to_do_application/widgets/forDrawer.dart';
 import 'dbhelper.dart';
 import 'package:flutter/material.dart';
-import 'package:to_do_application/widgets/newProj.dart';
-import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'package:to_do_application/widgets/task.dart';
-// import 'package:to_do_application/widgets/task2.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,11 +16,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       title: 'Flutter Demo',
       darkTheme: ThemeData(
+       
         floatingActionButtonTheme:
             FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
-        textTheme: TextTheme(body1: TextStyle(color: Colors.white)),
+        textTheme: TextTheme(body1: TextStyle(color: Colors.white), body2: TextStyle(color:Colors.black)),
         iconTheme: IconThemeData(
           color: Colors.white,
         ),
@@ -36,7 +34,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: TextTheme(body1: TextStyle(color: Colors.black)),
+        textTheme: TextTheme(body1: TextStyle(color: Colors.black), body2: TextStyle(color:Colors.white)),
         floatingActionButtonTheme:
             FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
         brightness: Brightness.light,
@@ -46,7 +44,7 @@ class MyApp extends StatelessWidget {
             iconTheme: IconThemeData(color: Colors.black)),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Входящие'),
+      home: MyHomePage(title: 'Задачи'),
     );
   }
 }
@@ -95,8 +93,9 @@ class _MyHomePageState extends State<MyHomePage> {
               return SingleChildScrollView(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: BottomMenu(MediaQuery.of(context).size.height * 0.35, ctx,
-                    (ToDo newTask) {
+                child:
+                    BottomMenu(MediaQuery.of(context).size.height * 0.35, ctx,
+                        (ToDo newTask) {
                   setState(() {
                     tasks.insert(0, newTask);
                   });
