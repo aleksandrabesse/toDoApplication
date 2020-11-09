@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/widgets/bottomMenu.dart';
 import 'package:to_do_application/widgets/forDrawer.dart';
 import 'dbhelper.dart';
 import 'package:flutter/material.dart';
+
 import 'package:to_do_application/dbhelper.dart';
 import 'package:to_do_application/widgets/task.dart';
 
 void main() {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.red,
+
+    // statusBarBrightness: Brightness.dark,
+    // systemNavigationBarColor: Colors.white,
+    // systemNavigationBarIconBrightness: Brightness.dark,
+     systemNavigationBarColor: Colors.yellow,
+    // systemNavigationBarDividerColor: Colors.transparent,
+  ));
   runApp(MyApp());
 }
 
@@ -16,13 +28,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       title: 'Flutter Demo',
       darkTheme: ThemeData(
-       
         floatingActionButtonTheme:
             FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
-        textTheme: TextTheme(body1: TextStyle(color: Colors.white), body2: TextStyle(color:Colors.black)),
+        textTheme: TextTheme(
+            body1: TextStyle(color: Colors.white),
+            body2: TextStyle(color: Colors.black)),
         iconTheme: IconThemeData(
           color: Colors.white,
         ),
@@ -34,7 +46,9 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: TextTheme(body1: TextStyle(color: Colors.black), body2: TextStyle(color:Colors.white)),
+        textTheme: TextTheme(
+            body1: TextStyle(color: Colors.black),
+            body2: TextStyle(color: Colors.white)),
         floatingActionButtonTheme:
             FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
         brightness: Brightness.light,
@@ -109,9 +123,9 @@ class _MyHomePageState extends State<MyHomePage> {
         iconTheme: Theme.of(context).iconTheme,
         textTheme: Theme.of(context).textTheme,
         elevation: 0.0,
-        title: Text(
-          widget.title,
-        ),
+        // title: Text(
+        //   widget.title,
+        // ),
       ),
       body: SafeArea(
         child: Stack(fit: StackFit.expand, children: [

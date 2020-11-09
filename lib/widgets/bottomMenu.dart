@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -28,6 +29,7 @@ class _BottomMenuState extends State<BottomMenu> {
   }
 
   void initState() {
+   
     DatabaseHelper.instance
         .queryAllRows('project')
         .then((value) => value.forEach((element) {
@@ -81,10 +83,16 @@ class _BottomMenuState extends State<BottomMenu> {
                 onChanged: (text) {
                   newToDo.changeToDoName = tx.text;
                 },
-                decoration: InputDecoration.collapsed(
-                  hintText: 'Сделать...',
-                  hintStyle: Theme.of(context).textTheme.body2,
-                ),
+                decoration: (MediaQuery.of(context).platformBrightness ==
+                        Brightness.light)
+                    ? InputDecoration.collapsed(
+                        hintText: 'Сделать...',
+                        hintStyle: Theme.of(context).textTheme.body2,
+                      )
+                    : InputDecoration(
+                        hintText: 'Сделать...',
+                        hintStyle: Theme.of(context).textTheme.body2,
+                      ),
               ),
             ),
             Row(
