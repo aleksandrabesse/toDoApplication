@@ -82,12 +82,33 @@ class _MyHomePageState extends State<MyHomePage> {
   //   ToDo('Добавить срочную задачу', imp: 3)
   // ];
   List<Project> proj = [];
+  bool isLoading = true;
+  int toDoCount;
+  void getFuture() async {
+    await DatabaseHelper.instance
+        .queryAllRows('project')
+        .then((value) => value.forEach((element) {
+              print(element['name']);
+              setState(() {
+                proj.add(Project.fromMap(element));
+                isLoading = false;
+              });
+            }));
+
+    await dbHelper.queryRowCount('toDo').then((value) {
+      setState(() {
+        toDoCount = value;
+      });
+    });
+  }
+
   void initState() {
-    textForDrawer = DateTime.now().hour >= 18
+    textForDrawer = DateTime.now().hour >= 18 || DateTime.now().hour <= 5
         ? 'Добрый вечер, '
         : DateTime.now().hour > 12
             ? 'Добрый день, '
             : 'Доброе утро, ';
+    getFuture();
     //  SystemChrome.setSystemUIOverlayStyle(
     //   // SystemUiOverlayStyle(
     //   //   statusBarColor: Colors.transparent,
@@ -99,14 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //         tasks.insert(0, ToDo.fromMap(element));
     //       });
     //     }));
-    DatabaseHelper.instance
-        .queryAllRows('project')
-        .then((value) => value.forEach((element) {
-              print(element['name']);
-              setState(() {
-                proj.add(Project.fromMap(element));
-              });
-            }));
+
     super.initState();
   }
 
@@ -157,14 +171,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    int index = 0;
+    int index = 1;
     List<Text> lstForUp = [
       Text(
         date(DateTime.now()) + ", " + DateTime.now().day.toString(),
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
       ),
       Text(textForDrawer + 'Анна!'),
-      Text('У вас 0 задач из 0 проектов')
+      Text('У вас ' +
+          toDoCount.toString() +
+          ' задач из ' +
+          proj.length.toString() +
+          ' проектов')
     ];
     AppBar appBar = AppBar(
       backgroundColor: Colors.transparent,
@@ -206,58 +224,60 @@ class _MyHomePageState extends State<MyHomePage> {
         width: double.infinity,
         height: double.infinity,
         child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                height: height * 0.2,
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: lstForUp.map((e) {
-                      return Align(
-                        child: e,
-                        alignment: Alignment.centerLeft,
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-              Container(
-                height: height * 0.3,
-                width: double.infinity,
-                child: Center(
-                  child: Container(
-                    height: height * 0.7 * 0.9,
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: ListOfTasks(proj[index]),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: height * 0.35,
-                child: Column(
+          child: isLoading
+              ? Container(child: Center(child: CircularProgressIndicator()))
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      child: Text('Предстоящие'),
-                      padding: const EdgeInsets.all(20),
+                      height: height * 0.2,
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: lstForUp.map((e) {
+                            return Align(
+                              child: e,
+                              alignment: Alignment.centerLeft,
+                            );
+                          }).toList(),
+                        ),
+                      ),
                     ),
-                    TaskForMain('Name', DateTime.now(),
-                        MediaQuery.of(context).size.width * 0.8),
+                    Container(
+                      height: height * 0.3,
+                      width: double.infinity,
+                      child: Center(
+                        child: Container(
+                          height: height * 0.7 * 0.9,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: ListOfTasks(proj[index]),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: height * 0.35,
+                      child: Column(
+                        children: [
+                          Container(
+                            child: Text('Предстоящие'),
+                            padding: const EdgeInsets.all(20),
+                          ),
+                          TaskForMain('Name', DateTime.now(),
+                              MediaQuery.of(context).size.width * 0.8),
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
         ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
