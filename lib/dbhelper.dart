@@ -107,6 +107,11 @@ class DatabaseHelper {
         await db.rawQuery('SELECT COUNT(*) FROM $table'));
   }
 
+ Future<int> queryRowProjCount(String table, int proj) async {
+    Database db = await instance.database;
+    return Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM $table where proj = $proj'));
+  }
   Future<List<Map<String, dynamic>>> getForeignKey(int id) async {
     Database db = await instance.database;
     return db.rawQuery('SELECT icon FROM project where id==$id');
