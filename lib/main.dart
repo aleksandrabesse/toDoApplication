@@ -75,12 +75,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String textForDrawer;
   final dbHelper = DatabaseHelper.instance;
-  // List<ToDo> tasks = [
-  //   ToDo('Добавить задачу', imp: 0),
-  //   ToDo('Добавить не очень важную задачу', imp: 1),
-  //   ToDo('Добавить важную, но не срочную задачу', imp: 2),
-  //   ToDo('Добавить срочную задачу', imp: 3)
-  // ];
+  List<ToDo> tasks = [];
   List<Project> proj = [];
   bool isLoading = true;
   int toDoCount;
@@ -109,17 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ? 'Добрый день, '
             : 'Доброе утро, ';
     getFuture();
-    //  SystemChrome.setSystemUIOverlayStyle(
-    //   // SystemUiOverlayStyle(
-    //   //   statusBarColor: Colors.transparent,
-    //   //   systemNavigationBarColor: Colors.transparent
-    //   // ),
-    // );
-    // dbHelper.queryAllRows('toDo').then((value) => value.forEach((element) {
-    //       setState(() {
-    //         tasks.insert(0, ToDo.fromMap(element));
-    //       });
-    //     }));
+    dbHelper.queryAllRows('toDo').then((value) => value.forEach((element) {
+          setState(() {
+            tasks.insert(0, ToDo.fromMap(element));
+          });
+        }));
 
     super.initState();
   }
@@ -168,10 +157,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
+  int index = 0;
   @override
   Widget build(BuildContext context) {
-    int index = 1;
     List<Text> lstForUp = [
       Text(
         date(DateTime.now()) + ", " + DateTime.now().day.toString(),
@@ -184,6 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
           proj.length.toString() +
           ' проектов')
     ];
+
     AppBar appBar = AppBar(
       backgroundColor: Colors.transparent,
       iconTheme: Theme.of(context).iconTheme,
@@ -195,30 +184,30 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       drawer: HelpDrawer(),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor:
-      //       Theme.of(context).floatingActionButtonTheme.backgroundColor,
-      //   child: Icon(Icons.add),
-      //   onPressed: () {
-      //     showModalBottomSheet(
-      //       isScrollControlled: true,
-      //       context: context,
-      //       builder: (ctx) {
-      //         return SingleChildScrollView(
-      //           padding: EdgeInsets.only(
-      //               bottom: MediaQuery.of(context).viewInsets.bottom),
-      //           child:
-      //               BottomMenu(MediaQuery.of(context).size.height * 0.35, ctx,
-      //                   (ToDo newTask) {
-      //             setState(() {
-      //               tasks.insert(0, newTask);
-      //             });
-      //           }),
-      //         );
-      //       },
-      //     );
-      //   },
-      // ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor:
+            Theme.of(context).floatingActionButtonTheme.backgroundColor,
+        child: Icon(Icons.add),
+        onPressed: () {
+          // showModalBottomSheet(
+          //   isScrollControlled: true,
+          //   context: context,
+          //   builder: (ctx) {
+          //     return SingleChildScrollView(
+          //       padding: EdgeInsets.only(
+          //           bottom: MediaQuery.of(context).viewInsets.bottom),
+          //       child:
+          //           BottomMenu(MediaQuery.of(context).size.height * 0.35, ctx,
+          //               (ToDo newTask) {
+          //         setState(() {
+          //           tasks.insert(0, newTask);
+          //         });
+          //       }),
+          //     );
+          //   },
+          // );
+        },
+      ),
       appBar: appBar,
       body: Container(
         width: double.infinity,
@@ -231,9 +220,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     Container(
                       height: height * 0.2,
-                      width: double.infinity,
+                      width: MediaQuery.of(context).size.width * 0.85,
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -252,18 +241,33 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Center(
                         child: Container(
                           height: height * 0.7 * 0.9,
-                          width: MediaQuery.of(context).size.width * 0.8,
+                          width: MediaQuery.of(context).size.width * 0.85,
                           child: Card(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.0),
                             ),
-                            child: ListOfTasks(proj[index]),
+                            child: GestureDetector(
+                                onHorizontalDragStart: (details) {
+                                  setState(() {
+                                    int n = proj.length;
+                                    if (index + 1 == n)
+                                      setState(() {
+                                        index = 0;
+                                      });
+                                    else
+                                      setState(() {
+                                        index += 1;
+                                      });
+                                    print('Ok');
+                                  });
+                                },
+                                child: ListOfTasks(proj[index])),
                           ),
                         ),
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.8,
+                      width: MediaQuery.of(context).size.width * 0.85,
                       height: height * 0.35,
                       child: Column(
                         children: [
@@ -272,7 +276,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             padding: const EdgeInsets.all(20),
                           ),
                           TaskForMain('Name', DateTime.now(),
-                              MediaQuery.of(context).size.width * 0.8),
+                              MediaQuery.of(context).size.width * 0.85),
                         ],
                       ),
                     )

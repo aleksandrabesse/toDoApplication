@@ -37,53 +37,55 @@ class _ListOfTasksState extends State<ListOfTasks> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: const Color(0xFFF9957F).withOpacity(0.5),
-                            width: 1.5,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: const Color(0xFFF9957F).withOpacity(0.5),
+                              width: 1.5,
+                            ),
+                            shape: BoxShape.circle,
                           ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          IconData(widget.p.getIconroj,
-                              fontFamily: 'MaterialIcons'),
-                          color: const Color(0xFFF9957F),
+                          child: Icon(
+                            IconData(widget.p.getIconroj,
+                                fontFamily: 'MaterialIcons'),
+                            color: const Color(0xFFF9957F),
+                          ),
                         ),
                       ),
-                      flex: 1,
-                    ),
+                      IconButton(
+                          icon: Icon(Icons.add_circle), onPressed: () {})
+                    ],
                   ),
-                  Flexible(
-                    flex: 1,
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              Align(
-                                child: Text(count.toString() + ' tasks'),
-                                alignment: Alignment.centerLeft,
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            Align(
+                              child: Text(count.toString() + ' tasks'),
+                              alignment: Alignment.centerLeft,
+                            ),
+                            Align(
+                              child: Text(
+                                widget.p.getNameProj,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24),
                               ),
-                              Align(
-                                child: Text(
-                                  widget.p.getNameProj,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24),
-                                ),
-                                alignment: Alignment.centerLeft,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                              alignment: Alignment.centerLeft,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],
