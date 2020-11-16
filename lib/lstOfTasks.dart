@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_application/russian.dart';
 import 'classes/proj.dart';
 import 'dbhelper.dart';
 
@@ -13,6 +14,7 @@ class ListOfTasks extends StatefulWidget {
 
 class _ListOfTasksState extends State<ListOfTasks> {
   int count;
+  String text = '';
   void getFuture() async {
     await DatabaseHelper.instance
         .queryRowProjCount('toDo', widget.p.getIdProj)
@@ -20,6 +22,7 @@ class _ListOfTasksState extends State<ListOfTasks> {
       print(value);
       setState(() {
         count = value;
+        text = count.toString() + getTask(count);
       });
     });
   }
@@ -31,11 +34,7 @@ class _ListOfTasksState extends State<ListOfTasks> {
   @override
   Widget build(BuildContext context) {
     getFuture();
-    return
-        // isLoading
-        //     ? Center(child: CircularProgressIndicator())
-        // :
-        Container(
+    return Container(
       child: Container(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -74,7 +73,7 @@ class _ListOfTasksState extends State<ListOfTasks> {
                   Column(
                     children: [
                       Align(
-                        child: Text(count.toString() + ' tasks'),
+                        child: Text(text),
                         alignment: Alignment.centerLeft,
                       ),
                       Align(
@@ -94,7 +93,5 @@ class _ListOfTasksState extends State<ListOfTasks> {
         ),
       ),
     );
-
-    // }
   }
 }

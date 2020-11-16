@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path/path.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/generateForList.dart';
 import 'package:to_do_application/lstOfTasks.dart';
-
 import 'package:to_do_application/widgets/floatingAction.dart';
 import 'package:to_do_application/widgets/forDrawer.dart';
 import 'dbhelper.dart';
 import 'package:flutter/material.dart';
-
 import 'package:to_do_application/dbhelper.dart';
-
 import 'classes/proj.dart';
+import 'package:to_do_application/russian.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -96,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage>
   List<Project> proj = [];
   bool isLoading = true;
   int toDoCount;
+  List<Text> lstForUp;
   void func_toDoCount() async {
     await dbHelper.queryRowCount('toDo').then((value) {
       setState(() {
@@ -122,6 +120,19 @@ class _MyHomePageState extends State<MyHomePage>
                 isLoading = false;
               });
             }));
+    lstForUp = [
+      Text(
+        date(DateTime.now()) + ", " + DateTime.now().day.toString(),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+      ),
+      Text(textForDrawer + 'Анна!'),
+      Text('У вас ' +
+          toDoCount.toString() +
+          getTask(toDoCount) +
+          ' из ' +
+          proj.length.toString() +
+          getProject(proj.length))
+    ];
   }
 
   void initState() {
@@ -132,49 +143,6 @@ class _MyHomePageState extends State<MyHomePage>
             : 'Доброе утро, ';
     getFuture();
     super.initState();
-  }
-
-  String date(DateTime tm) {
-    String month;
-    switch (tm.month) {
-      case 1:
-        month = "январь";
-        break;
-      case 2:
-        month = "февраль";
-        break;
-      case 3:
-        month = "март";
-        break;
-      case 4:
-        month = "апрель";
-        break;
-      case 5:
-        month = "май";
-        break;
-      case 6:
-        month = "июнь";
-        break;
-      case 7:
-        month = "июль";
-        break;
-      case 8:
-        month = "август";
-        break;
-      case 9:
-        month = "сентябрь";
-        break;
-      case 10:
-        month = "октябрь";
-        break;
-      case 11:
-        month = "ноябрь";
-        break;
-      case 12:
-        month = "декабрь";
-        break;
-    }
-    return month;
   }
 
   int index = 0;
@@ -197,19 +165,6 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    List<Text> lstForUp = [
-      Text(
-        date(DateTime.now()) + ", " + DateTime.now().day.toString(),
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-      ),
-      Text(textForDrawer + 'Анна!'),
-      Text('У вас ' +
-          toDoCount.toString() +
-          ' задач из ' +
-          proj.length.toString() +
-          ' проектов')
-    ];
-
     AppBar appBar = AppBar(
       backgroundColor: Colors.transparent,
       iconTheme: Theme.of(context).iconTheme,
