@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:to_do_application/classes/toDo.dart';
@@ -214,6 +215,13 @@ class _MyHomePageState extends State<MyHomePage>
                         width: double.infinity,
                         child: Center(
                           child: GestureDetector(
+                            // TODO both side
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SecondRoute()));
+                            },
                             onHorizontalDragStart: (details) {
                               setState(() {
                                 changeIndexForColor();
@@ -257,6 +265,25 @@ class _MyHomePageState extends State<MyHomePage>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: colors[index1]),
+        ),
+      ),
+    );
+  }
+}
+
+class SecondRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Second Route"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('Go back!'),
         ),
       ),
     );
