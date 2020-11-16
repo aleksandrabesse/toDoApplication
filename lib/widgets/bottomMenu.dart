@@ -29,7 +29,6 @@ class _BottomMenuState extends State<BottomMenu> {
   }
 
   void initState() {
-   
     DatabaseHelper.instance
         .queryAllRows('project')
         .then((value) => value.forEach((element) {

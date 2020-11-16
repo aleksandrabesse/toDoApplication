@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/generateForList.dart';
 import 'package:to_do_application/lstOfTasks.dart';
-import 'package:to_do_application/widgets/bottomMenu.dart';
+
+import 'package:to_do_application/widgets/floatingAction.dart';
 import 'package:to_do_application/widgets/forDrawer.dart';
 import 'dbhelper.dart';
 import 'package:flutter/material.dart';
 
 import 'package:to_do_application/dbhelper.dart';
-import 'package:to_do_application/widgets/task.dart';
+
 import 'classes/proj.dart';
 
 void main() {
@@ -24,39 +26,53 @@ void main() {
   runApp(MyApp());
 }
 
+const List<List<Color>> colors = [
+  [const Color(0xFFF9957F), const Color(0xFFF2F5D0)],
+  [const Color(0xFF9600FF), const Color(0xFFAEBAF8)],
+  [const Color(0xFFEEBD89), const Color(0xFFD13DBD)],
+  [const Color(0xFFBB73E0), const Color(0xFFFF8DDB)],
+  [const Color(0xFF0CCDA3), const Color(0xFFC1FCD3)],
+  [const Color(0xFF849B5C), const Color(0xFFBFFFC7)],
+  [const Color(0xFF9FA5D5), const Color(0xFFE8F5C8)],
+  [const Color(0xFFCCFBFF), const Color(0xFFEF96C5)],
+  [const Color(0xFFA96F44), const Color(0xFFF2ECB6)],
+  [const Color(0xFFED765E), const Color(0xFFE3BDE5)],
+  [const Color(0xFF7DC387), const Color(0xFFDBE9EA)],
+  [const Color(0xFFEAE5C9), const Color(0xFF6CC6CB)],
+];
+
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      darkTheme: ThemeData(
-        floatingActionButtonTheme:
-            FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
-        textTheme: TextTheme(
-            body1: TextStyle(color: Colors.white),
-            body2: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        brightness: Brightness.dark,
-        appBarTheme: AppBarTheme(
-            color: Colors.transparent,
-            iconTheme: IconThemeData(color: Colors.black)),
-      ),
+      // darkTheme: ThemeData(
+      //   floatingActionButtonTheme:
+      //       FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
+      //   // textTheme: TextTheme(
+      //   //     body1: TextStyle(color: Colors.white),
+      //   //     body2: TextStyle(color: Colors.black)),
+      //   // iconTheme: IconThemeData(
+      //   //   color: Colors.white,
+      //   // ),
+      //   brightness: Brightness.dark,
+      //   appBarTheme: AppBarTheme(
+      //       color: Colors.transparent,
+      //       iconTheme: IconThemeData(color: Colors.black)),
+      // ),
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: Theme.of(context)
             .textTheme
             .apply(fontSizeFactor: 1.0, fontSizeDelta: 2.0),
-        floatingActionButtonTheme:
-            FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
+        // floatingActionButtonTheme:
+        //     FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
         brightness: Brightness.light,
         primarySwatch: Colors.blue,
         appBarTheme: AppBarTheme(
             color: Colors.transparent,
-            iconTheme: IconThemeData(color: Colors.black)),
+            iconTheme: IconThemeData(color: Colors.white)),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Задачи'),
@@ -72,13 +88,22 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   String textForDrawer;
   final dbHelper = DatabaseHelper.instance;
   List<ToDo> tasks = [];
   List<Project> proj = [];
   bool isLoading = true;
   int toDoCount;
+  void func_toDoCount() async {
+    await dbHelper.queryRowCount('toDo').then((value) {
+      setState(() {
+        toDoCount = value;
+      });
+    });
+  }
+
   void getFuture() async {
     await DatabaseHelper.instance
         .queryAllRows('project')
@@ -86,15 +111,17 @@ class _MyHomePageState extends State<MyHomePage> {
               print(element['name']);
               setState(() {
                 proj.add(Project.fromMap(element));
+              });
+            }));
+    await func_toDoCount();
+    await dbHelper
+        .queryAllRows('toDo')
+        .then((value) => value.forEach((element) {
+              setState(() {
+                tasks.insert(0, ToDo.fromMap(element));
                 isLoading = false;
               });
             }));
-
-    await dbHelper.queryRowCount('toDo').then((value) {
-      setState(() {
-        toDoCount = value;
-      });
-    });
   }
 
   void initState() {
@@ -104,12 +131,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ? 'Добрый день, '
             : 'Доброе утро, ';
     getFuture();
-    dbHelper.queryAllRows('toDo').then((value) => value.forEach((element) {
-          setState(() {
-            tasks.insert(0, ToDo.fromMap(element));
-          });
-        }));
-
     super.initState();
   }
 
@@ -156,8 +177,24 @@ class _MyHomePageState extends State<MyHomePage> {
     return month;
   }
 
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   int index = 0;
+  int index1 = 0; //index for colors
+  void changeIndexForColor() {
+    int n = colors.length;
+    if (index1 + 1 == n)
+      index1 = 0;
+    else
+      index1 += 1;
+  }
+
+  void changeIndexForProject() {
+    int n = proj.length;
+    if (index + 1 == n)
+      index = 0;
+    else
+      index += 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Text> lstForUp = [
@@ -182,32 +219,15 @@ class _MyHomePageState extends State<MyHomePage> {
     double height =
         MediaQuery.of(context).size.height - appBar.preferredSize.height;
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
       drawer: HelpDrawer(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor:
-            Theme.of(context).floatingActionButtonTheme.backgroundColor,
-        child: Icon(Icons.add),
-        onPressed: () {
-          // showModalBottomSheet(
-          //   isScrollControlled: true,
-          //   context: context,
-          //   builder: (ctx) {
-          //     return SingleChildScrollView(
-          //       padding: EdgeInsets.only(
-          //           bottom: MediaQuery.of(context).viewInsets.bottom),
-          //       child:
-          //           BottomMenu(MediaQuery.of(context).size.height * 0.35, ctx,
-          //               (ToDo newTask) {
-          //         setState(() {
-          //           tasks.insert(0, newTask);
-          //         });
-          //       }),
-          //     );
-          //   },
-          // );
-        },
-      ),
+      floatingActionButton: FancyFab((ToDo newTask) {
+        setState(() {
+          tasks.insert(0, newTask);
+          toDoCount += 1;
+        });
+      }, proj, colors[index1][0]),
       appBar: appBar,
       body: Container(
         width: double.infinity,
@@ -215,79 +235,75 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SafeArea(
           child: isLoading
               ? Container(child: Center(child: CircularProgressIndicator()))
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: height * 0.2,
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: lstForUp.map((e) {
-                            return Align(
-                              child: e,
-                              alignment: Alignment.centerLeft,
-                            );
-                          }).toList(),
+              : SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: height * 0.2,
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: lstForUp.map((e) {
+                              return Align(
+                                child: e,
+                                alignment: Alignment.centerLeft,
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      height: height * 0.3,
-                      width: double.infinity,
-                      child: Center(
-                        child: Container(
-                          height: height * 0.7 * 0.9,
-                          width: MediaQuery.of(context).size.width * 0.85,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                      Container(
+                        height: height * 0.3,
+                        width: double.infinity,
+                        child: Center(
+                          child: GestureDetector(
+                            onHorizontalDragStart: (details) {
+                              setState(() {
+                                changeIndexForColor();
+                                changeIndexForProject();
+                              });
+                            },
+                            child: Container(
+                              height: height * 0.7 * 0.9,
+                              width: MediaQuery.of(context).size.width * 0.85,
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child:
+                                    ListOfTasks(proj[index], colors[index1][0]),
+                              ),
                             ),
-                            child: GestureDetector(
-                                onHorizontalDragStart: (details) {
-                                  setState(() {
-                                    int n = proj.length;
-                                    if (index + 1 == n)
-                                      setState(() {
-                                        index = 0;
-                                      });
-                                    else
-                                      setState(() {
-                                        index += 1;
-                                      });
-                                    print('Ok');
-                                  });
-                                },
-                                child: ListOfTasks(proj[index])),
                           ),
                         ),
                       ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      height: height * 0.35,
-                      child: Column(
-                        children: [
-                          Container(
-                            child: Text('Предстоящие'),
-                            padding: const EdgeInsets.all(20),
-                          ),
-                          TaskForMain('Name', DateTime.now(),
-                              MediaQuery.of(context).size.width * 0.85),
-                        ],
-                      ),
-                    )
-                  ],
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        height: height * 0.35,
+                        child: Column(
+                          children: [
+                            Container(
+                              child: Text('Предстоящие'),
+                              padding: const EdgeInsets.all(20),
+                            ),
+                            TaskForMain('Name', DateTime.now(),
+                                MediaQuery.of(context).size.width * 0.85),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
         ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [const Color(0xFFF9957F), const Color(0xFFF2F5D0)]),
+              colors: colors[index1]),
         ),
       ),
     );
