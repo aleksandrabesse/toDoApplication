@@ -94,13 +94,6 @@ class _MyHomePageState extends State<MyHomePage>
   bool isLoading = true;
   int toDoCount;
   List<Text> lstForUp;
-  void func_toDoCount() async {
-    await dbHelper.queryRowCount('toDo').then((value) {
-      setState(() {
-        toDoCount = value;
-      });
-    });
-  }
 
   void getFuture() async {
     await DatabaseHelper.instance
@@ -111,7 +104,11 @@ class _MyHomePageState extends State<MyHomePage>
                 proj.add(Project.fromMap(element));
               });
             }));
-    await func_toDoCount();
+    await dbHelper.queryRowCount('toDo').then((value) {
+      setState(() {
+        toDoCount = value;
+      });
+    });
     await dbHelper
         .queryAllRows('toDo')
         .then((value) => value.forEach((element) {
@@ -174,15 +171,16 @@ class _MyHomePageState extends State<MyHomePage>
     double height =
         MediaQuery.of(context).size.height - appBar.preferredSize.height;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      drawer: HelpDrawer(),
+      // drawer: HelpDrawer(),
       floatingActionButton: FancyFab((ToDo newTask) {
         setState(() {
           tasks.insert(0, newTask);
           toDoCount += 1;
         });
-      }, proj, colors[index1][0]),
+      }, proj, colors[index1][0], context),
       appBar: appBar,
       body: Container(
         width: double.infinity,

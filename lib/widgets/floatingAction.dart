@@ -7,10 +7,11 @@ import 'package:to_do_application/widgets/newProj.dart';
 
 class FancyFab extends StatefulWidget {
   final Function(ToDo) adder;
+  BuildContext context;
   Color color;
   List<Project> proj;
 
-  FancyFab(this.adder, this.proj, this.color);
+  FancyFab(this.adder, this.proj, this.color, this.context);
   @override
   _FancyFabState createState() => _FancyFabState();
 }
@@ -96,12 +97,17 @@ class _FancyFabState extends State<FancyFab>
     return Container(
       child: FloatingActionButton(
         onPressed: () {
+          _animationController.reverse();
           showModalBottomSheet(
             isScrollControlled: true,
             context: context,
             builder: (ctx) {
-              return BottomMenu(
-                  MediaQuery.of(context).size.height * 0.35, ctx, widget.adder);
+              return SingleChildScrollView(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(widget.context).viewInsets.bottom),
+                child: BottomMenu(MediaQuery.of(context).size.height * 0.35,
+                    ctx, widget.adder),
+              );
             },
           );
         },
@@ -116,6 +122,8 @@ class _FancyFabState extends State<FancyFab>
     return Container(
       child: FloatingActionButton(
         onPressed: () {
+          _animationController.reverse();
+
           showDialog(
               context: context,
               builder: (context) {
