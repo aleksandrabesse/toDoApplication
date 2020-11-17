@@ -2,15 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:to_do_application/classes/toDo.dart';
-import 'package:to_do_application/generateForList.dart';
-import 'package:to_do_application/lstOfTasks.dart';
+import 'package:to_do_application/widgets/generateForList.dart';
+import 'package:to_do_application/widgets/lstOfTasks.dart';
 import 'package:to_do_application/widgets/floatingAction.dart';
-import 'package:to_do_application/widgets/forDrawer.dart';
 import 'dbhelper.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'classes/proj.dart';
 import 'package:to_do_application/russian.dart';
+import 'package:to_do_application/widgets/newroute.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -105,11 +105,6 @@ class _MyHomePageState extends State<MyHomePage>
                 proj.add(Project.fromMap(element));
               });
             }));
-    await dbHelper.queryRowCount('toDo').then((value) {
-      setState(() {
-        toDoCount = value;
-      });
-    });
     await dbHelper
         .queryAllRows('toDo')
         .then((value) => value.forEach((element) {
@@ -118,6 +113,7 @@ class _MyHomePageState extends State<MyHomePage>
                 isLoading = false;
               });
             }));
+    toDoCount = tasks.length;
     lstForUp = [
       Text(
         date(DateTime.now()) + ", " + DateTime.now().day.toString(),
@@ -220,7 +216,11 @@ class _MyHomePageState extends State<MyHomePage>
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SecondRoute()));
+                                      builder: (context) => SecondRoute(
+                                          proj[index],
+                                          appBar,
+                                          colors[index1],
+                                          tasks)));
                             },
                             onHorizontalDragStart: (details) {
                               setState(() {
@@ -265,25 +265,6 @@ class _MyHomePageState extends State<MyHomePage>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: colors[index1]),
-        ),
-      ),
-    );
-  }
-}
-
-class SecondRoute extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Second Route"),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Go back!'),
         ),
       ),
     );

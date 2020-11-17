@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_application/russian.dart';
-import 'classes/proj.dart';
-import 'dbhelper.dart';
+import '../classes/proj.dart';
+import '../dbhelper.dart';
 
 class ListOfTasks extends StatefulWidget {
   Project p;
@@ -34,7 +34,7 @@ class _ListOfTasksState extends State<ListOfTasks> {
   @override
   Widget build(BuildContext context) {
     getFuture();
-    return Container(
+    return GestureDetector(
       child: Container(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -61,7 +61,7 @@ class _ListOfTasksState extends State<ListOfTasks> {
                     ),
                   ),
                 ),
-                IconButton(icon: Icon(Icons.add_circle), onPressed: () {})
+                IconButton(icon: Icon(Icons.settings), onPressed: () {})
               ],
             ),
             Container(

@@ -96,6 +96,7 @@ class _FancyFabState extends State<FancyFab>
     ));
     return Container(
       child: FloatingActionButton(
+        heroTag: 'btn3',
         onPressed: () {
           _animationController.reverse();
           showModalBottomSheet(
@@ -121,6 +122,7 @@ class _FancyFabState extends State<FancyFab>
   Widget inbox() {
     return Container(
       child: FloatingActionButton(
+        heroTag: 'btn1',
         onPressed: () {
           _animationController.reverse();
 
@@ -149,6 +151,7 @@ class _FancyFabState extends State<FancyFab>
   Widget toggle() {
     return Container(
       child: FloatingActionButton(
+        heroTag: 'btn2',
         backgroundColor: _buttonColor.value,
         onPressed: animate,
         tooltip: 'Добавить',
