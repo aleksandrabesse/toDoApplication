@@ -12,7 +12,7 @@ class FancyFab extends StatefulWidget {
   Color color;
   List<Project> proj;
   AppBar appBar;
-  FancyFab(this.adder, this.proj, this.color, this.context, this.appBar);
+  FancyFab(this.adder, this.proj, this.color,this.context, this.appBar);
   @override
   _FancyFabState createState() => _FancyFabState();
 }

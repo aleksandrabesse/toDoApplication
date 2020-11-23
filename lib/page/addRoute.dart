@@ -20,6 +20,7 @@ class _AddRouteState extends State<AddRoute> {
   List<Project> proj = [];
   TextEditingController tx = TextEditingController();
   DateTime selectedDate = DateTime.now();
+  DateTime selectedTime = DateTime.now();
   void initState() {
     DatabaseHelper.instance
         .queryAllRows('project')
@@ -39,6 +40,8 @@ class _AddRouteState extends State<AddRoute> {
   }
 
   void _add() async {
+    newToDo.changeToDoDate = DateTime(selectedDate.year, selectedDate.month,
+        selectedDate.day, selectedTime.hour, selectedTime.minute);
     final int id = await DatabaseHelper.instance.insertTask(newToDo);
     newToDo.changeToDoID = id;
     widget._adder(newToDo);
@@ -65,7 +68,6 @@ class _AddRouteState extends State<AddRoute> {
               Container(
                 height: height * 0.1,
                 width: double.infinity,
-                color: widget.color,
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   child: Align(
@@ -140,7 +142,7 @@ class _AddRouteState extends State<AddRoute> {
                                   itemWidth: 20,
                                   is24HourMode: true,
                                   onTimeChange: (time) {
-                                    print(time);
+                                    selectedTime = time;
                                   },
                                 ),
                               )
@@ -153,7 +155,6 @@ class _AddRouteState extends State<AddRoute> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Align(
-                              
                               child: Text(
                                 'Название задачи',
                                 style: TextStyle(
@@ -185,38 +186,7 @@ class _AddRouteState extends State<AddRoute> {
                                     gapPadding: 1,
                                     borderSide:
                                         BorderSide(color: Colors.green))),
-                            // validator: (val) {
-                            //   if (val.length == 0) {
-                            //     return 'Введите задачу';
-                            //   } else
-                            //     return null;
-                            // },
                           ),
-                          // TextFormField(
-                          //   textCapitalization: TextCapitalization.sentences,
-                          //   maxLines: 1,
-                          //   autofocus: false,
-                          //   controller: tx,
-                          //   onFieldSubmitted: (text) {
-                          //     newToDo.changeToDoName = tx.text;
-                          //   },
-                          //   onChanged: (text) {
-                          //     newToDo.changeToDoName = tx.text;
-                          //   },
-                          //   decoration: InputDecoration(
-                          //       labelText: 'Введите задачу',
-                          //       fillColor: Colors.white,
-                          //       border: OutlineInputBorder(
-                          //           borderRadius: BorderRadius.circular(25),
-                          //           borderSide:
-                          //               BorderSide(color: Colors.green))),
-                          //   validator: (val) {
-                          //     if (val.length == 0) {
-                          //       return 'Введите задачу';
-                          //     } else
-                          //       return null;
-                          //   },
-                          // ),
                         ],
                       ),
                       Column(
@@ -277,9 +247,7 @@ class _AddRouteState extends State<AddRoute> {
                         ),
                       )
                     ],
-                  )
-                  // color: Colors.white,
-                  ),
+                  )),
             ],
           )),
         ));
