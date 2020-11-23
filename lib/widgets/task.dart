@@ -31,7 +31,6 @@ class _TaskState extends State<Task> {
 
   @override
   Widget build(BuildContext context) {
-  
     return SizedBox(
       // width: MediaQuery.of(context).size.width * 0.75,
       child: FutureBuilder(
@@ -48,7 +47,7 @@ class _TaskState extends State<Task> {
                   });
                 },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical:8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Row(
                     children: [
                       Icon(IconData(59744, fontFamily: 'MaterialIcons'),
@@ -61,46 +60,24 @@ class _TaskState extends State<Task> {
                                       : Colors.grey),
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 20,
-                            ),
+                          left: 20,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(widget.task.toDoName),
-                            Text(widget.task.toDoDate.day.toString() +
-                                '.' +
-                                widget.task.toDoDate.month.toString()),
+                            Text(
+                              widget.task.toDoDate.day.toString() +
+                                  '.' +
+                                  widget.task.toDoDate.month.toString(),
+                              style: TextStyle(color: Colors.grey),
+                            ),
                           ],
                         ),
                       )
                     ],
                   ),
-                )
-                // ListTile(
-                //   contentPadding: EdgeInsets.zero,
-
-                //   subtitle: Text(widget.task.toDoDate.day.toString() +
-                //       '.' +
-                //       widget.task.toDoDate.month.toString()),
-                //   title: Text(widget.task.toDoName),
-                //   // trailing:
-                //   //     Icon(IconData(widget.icon, fontFamily: 'MaterialIcons')),
-                //   leading: GestureDetector(
-                //     onTap: () {
-                //       if (widget.icon == -1) print(12);
-                //       print(widget.icon);
-                //     },
-                //     child: Icon(IconData(59744, fontFamily: 'MaterialIcons'),
-                //         color: widget.task.toDoImportant == 3
-                //             ? Colors.red
-                //             : widget.task.toDoImportant == 2
-                //                 ? Colors.orange
-                //                 : widget.task.toDoImportant == 1
-                //                     ? Colors.green
-                //                     : Colors.grey),
-                //   ),
-                // ),
-                );
+                ));
         },
         future: getKey(),
       ),

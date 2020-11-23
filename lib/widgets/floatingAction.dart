@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_application/page/addRoute.dart';
 import 'package:to_do_application/widgets/bottomMenu.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/classes/proj.dart';
@@ -10,8 +11,8 @@ class FancyFab extends StatefulWidget {
   BuildContext context;
   Color color;
   List<Project> proj;
-
-  FancyFab(this.adder, this.proj, this.color, this.context);
+  AppBar appBar;
+  FancyFab(this.adder, this.proj, this.color, this.context, this.appBar);
   @override
   _FancyFabState createState() => _FancyFabState();
 }
@@ -99,18 +100,20 @@ class _FancyFabState extends State<FancyFab>
         heroTag: 'btn3',
         onPressed: () {
           _animationController.reverse();
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            builder: (ctx) {
-              return SingleChildScrollView(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(widget.context).viewInsets.bottom),
-                child: BottomMenu(MediaQuery.of(context).size.height * 0.35,
-                    ctx, widget.adder),
-              );
-            },
-          );
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => AddRoute(widget.appBar, widget.adder,widget.color)));
+          // showModalBottomSheet(
+          //   isScrollControlled: true,
+          //   context: context,
+          //   builder: (ctx) {
+          //     return SingleChildScrollView(
+          //       padding: EdgeInsets.only(
+          //           bottom: MediaQuery.of(widget.context).viewInsets.bottom),
+          //       child: BottomMenu(MediaQuery.of(context).size.height * 0.35,
+          //           ctx, widget.adder),
+          //     );
+          //   },
+          // );
         },
         backgroundColor: _buttonColor.value,
         tooltip: 'Добавить задачу',

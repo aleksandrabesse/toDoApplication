@@ -12,6 +12,12 @@ class NewProj extends StatefulWidget {
 class _NewProjState extends State<NewProj> {
   TextEditingController _tx = TextEditingController();
   @override
+  void dispose() {
+    _tx.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.4,

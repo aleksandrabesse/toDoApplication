@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -20,6 +21,12 @@ class _BottomMenuState extends State<BottomMenu> {
   TextEditingController tx = TextEditingController();
   DateTime selectedDate = DateTime.now();
   bool isSelected = false;
+  @override
+  void dispose() {
+    tx.dispose();
+    super.dispose();
+  }
+
   void _add() async {
     newToDo.changeToDoProj = 0;
     final int id = await DatabaseHelper.instance.insertTask(newToDo);
@@ -97,42 +104,37 @@ class _BottomMenuState extends State<BottomMenu> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                DropdownButton(
-                    hint: Text(
-                      'Выбрать проект',
-                      style: Theme.of(context).textTheme.body1,
+                // Flexible(
+                //   flex: 2,
+                //   child: 
+                // ),
+                Flexible(
+                  flex: 2,
+                  child: DatePickerWidget(
+                    looping: false,
+                    firstDate: DateTime.now(),
+                    dateFormat: "MM-dd(E)",
+                    onChange: (DateTime newDate, _) {
+                      print(newDate);
+                    },
+                    pickerTheme: DateTimePickerTheme(
+                      itemTextStyle: TextStyle(color: Colors.black),
+                      dividerColor: Colors.red,
                     ),
-                    items: proj.map((e) {
-                      return DropdownMenuItem(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(e.getNameProj),
-                            Icon(
-                              IconData(e.getIconroj,
-                                  fontFamily: 'MaterialIcons'),
-                            ),
-                          ],
-                        ),
-                        value: e.getIdProj,
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        newToDo.changeToDoProj = value;
-                      });
-                    }),
-                MaterialButton(
-                    child: isSelected
-                        ? Text(selectedDate.day.toString() +
-                            '.' +
-                            selectedDate.month.toString() +
-                            '.' +
-                            selectedDate.year.toString())
-                        : Text('Выбрать дату'),
-                    onPressed: () {
-                      _selectDate(context);
-                    }),
+                  ),
+                ),
+                // MaterialButton(
+                //     child: isSelected
+                //         ? Text(selectedDate.day.toString() +
+                //             '.' +
+                //             selectedDate.month.toString() +
+                //             '.' +
+                //             selectedDate.year.toString())
+                //         : Text('Выбрать дату'),
+                //     onPressed: () {
+                //       // _selectDate(context);
+
+                //     }),
               ],
             ),
             ToggleSwitch(

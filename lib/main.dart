@@ -140,13 +140,13 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   int index = 0;
-  int index1 = 0; //index for colors
+  int indexOfColor = 0; //index for colors
   void changeIndexForColor() {
     int n = colors.length;
-    if (index1 + 1 == n)
-      index1 = 0;
+    if (indexOfColor + 1 == n)
+      indexOfColor = 0;
     else
-      index1 += 1;
+      indexOfColor += 1;
   }
 
   void changeIndexForProject() {
@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage>
           tasks.insert(0, newTask);
           toDoCount += 1;
         });
-      }, proj, colors[index1][0], context),
+      }, proj, colors[indexOfColor][0], context, appBar),
       appBar: appBar,
       body: Container(
         width: double.infinity,
@@ -219,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage>
                                       builder: (context) => SecondRoute(
                                           proj[index],
                                           appBar,
-                                          colors[index1],
+                                          colors[indexOfColor],
                                           tasks)));
                             },
                             onHorizontalDragStart: (details) {
@@ -235,8 +235,8 @@ class _MyHomePageState extends State<MyHomePage>
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15.0),
                                 ),
-                                child:
-                                    ListOfTasks(proj[index], colors[index1][0]),
+                                child: ListOfTasks(
+                                    proj[index], colors[indexOfColor][0]),
                               ),
                             ),
                           ),
@@ -264,7 +264,7 @@ class _MyHomePageState extends State<MyHomePage>
           gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: colors[index1]),
+              colors: colors[indexOfColor]),
         ),
       ),
     );
