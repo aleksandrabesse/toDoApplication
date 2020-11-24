@@ -9,8 +9,8 @@ import 'dbhelper.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'classes/proj.dart';
-import 'package:to_do_application/russian.dart';
-import 'package:to_do_application/widgets/newroute.dart';
+import 'package:to_do_application/resourses.dart';
+import 'package:to_do_application/page/listOfTasksRoute.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -23,21 +23,6 @@ void main() {
   // ));
   runApp(MyApp());
 }
-
-const List<List<Color>> colors = [
-  [const Color(0xFFF9957F), const Color(0xFFF2F5D0)],
-  [const Color(0xFF9600FF), const Color(0xFFAEBAF8)],
-  [const Color(0xFFEEBD89), const Color(0xFFD13DBD)],
-  [const Color(0xFFBB73E0), const Color(0xFFFF8DDB)],
-  [const Color(0xFF0CCDA3), const Color(0xFFC1FCD3)],
-  [const Color(0xFF849B5C), const Color(0xFFBFFFC7)],
-  [const Color(0xFF9FA5D5), const Color(0xFFE8F5C8)],
-  [const Color(0xFFCCFBFF), const Color(0xFFEF96C5)],
-  [const Color(0xFFA96F44), const Color(0xFFF2ECB6)],
-  [const Color(0xFFED765E), const Color(0xFFE3BDE5)],
-  [const Color(0xFF7DC387), const Color(0xFFDBE9EA)],
-  [const Color(0xFFEAE5C9), const Color(0xFF6CC6CB)],
-];
 
 class MyApp extends StatelessWidget {
   @override
@@ -64,8 +49,6 @@ class MyApp extends StatelessWidget {
         textTheme: Theme.of(context)
             .textTheme
             .apply(fontSizeFactor: 1.0, fontSizeDelta: 2.0),
-        // floatingActionButtonTheme:
-        //     FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
         brightness: Brightness.light,
         primarySwatch: Colors.blue,
         appBarTheme: AppBarTheme(
@@ -95,7 +78,8 @@ class _MyHomePageState extends State<MyHomePage>
   bool isLoading = true;
   int toDoCount;
   List<Text> lstForUp;
-
+  int index = 0;
+  int indexOfColor = 0; //index for colors
   void getFuture() async {
     await DatabaseHelper.instance
         .queryAllRows('project')
@@ -139,8 +123,6 @@ class _MyHomePageState extends State<MyHomePage>
     super.initState();
   }
 
-  int index = 0;
-  int indexOfColor = 0; //index for colors
   void changeIndexForColor() {
     int n = colors.length;
     if (indexOfColor + 1 == n)

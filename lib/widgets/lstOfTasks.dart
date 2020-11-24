@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_application/russian.dart';
+import 'package:to_do_application/resourses.dart';
 import '../classes/proj.dart';
 import '../dbhelper.dart';
 
@@ -25,6 +25,7 @@ class _ListOfTasksState extends State<ListOfTasks> {
         text = count.toString() + getTask(count);
       });
     });
+
   }
 
   void initState() {

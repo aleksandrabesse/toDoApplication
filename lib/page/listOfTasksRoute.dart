@@ -3,7 +3,7 @@ import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/widgets/task.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'package:to_do_application/classes/proj.dart';
-import 'package:to_do_application/russian.dart';
+import 'package:to_do_application/resourses.dart';
 
 class SecondRoute extends StatefulWidget {
   AppBar appBar;
@@ -37,6 +37,7 @@ class _SecondRouteState extends State<SecondRoute> {
     widget.tasks.forEach((element) {
       if (element.toDoProj == widget.current.getIdProj) needed.add(element);
     });
+    needed.sort((a, b) => a.toDoDate.compareTo(b.toDoDate));
     super.initState();
   }
 

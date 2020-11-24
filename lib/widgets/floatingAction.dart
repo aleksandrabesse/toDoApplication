@@ -102,18 +102,7 @@ class _FancyFabState extends State<FancyFab>
           _animationController.reverse();
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => AddRoute(widget.appBar, widget.adder,widget.color)));
-          // showModalBottomSheet(
-          //   isScrollControlled: true,
-          //   context: context,
-          //   builder: (ctx) {
-          //     return SingleChildScrollView(
-          //       padding: EdgeInsets.only(
-          //           bottom: MediaQuery.of(widget.context).viewInsets.bottom),
-          //       child: BottomMenu(MediaQuery.of(context).size.height * 0.35,
-          //           ctx, widget.adder),
-          //     );
-          //   },
-          // );
+        
         },
         backgroundColor: _buttonColor.value,
         tooltip: 'Добавить задачу',

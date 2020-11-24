@@ -4,6 +4,7 @@ import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/dbhelper.dart';
+import 'package:to_do_application/resourses.dart';
 
 class AddRoute extends StatefulWidget {
   AppBar appBar;
@@ -231,6 +232,51 @@ class _AddRouteState extends State<AddRoute> {
                                   newToDo.changeToDoProj = value;
                                 });
                               }),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Align(
+                            child: Text(
+                              'Приоритет',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: Theme.of(context)
+                                      .textTheme
+                                      .body1
+                                      .fontSize),
+                            ),
+                            alignment: Alignment.centerLeft,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(right: 20),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: colorsForImportance[0]),
+                                height: 10,
+                                width: 10,
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(right: 20),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: colorsForImportance[1]),
+                                height: 10,
+                                width: 10,
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(right: 20),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: colorsForImportance[2]),
+                                height: 10,
+                                width: 10,
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                       Align(

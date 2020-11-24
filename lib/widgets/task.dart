@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/dbhelper.dart';
+import 'package:to_do_application/resourses.dart';
 
 class Task extends StatefulWidget {
   @override
@@ -16,10 +17,6 @@ class _TaskState extends State<Task> {
   final dbHelper = DatabaseHelper.instance;
   String project = '';
   List<int> k = List();
-  void initState() {
-// dbHelper.getForeignKey(widget.task.toDoID).then((value) => print(value[0]['icon'].toString() + widget.task.toDoName));
-    super.initState();
-  }
 
   Future<void> getKey() async {
     dbHelper.getForeignKey(widget.task.toDoID).then((value) {
@@ -49,32 +46,43 @@ class _TaskState extends State<Task> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(IconData(59744, fontFamily: 'MaterialIcons'),
-                          color: widget.task.toDoImportant == 3
-                              ? Colors.red
-                              : widget.task.toDoImportant == 2
-                                  ? Colors.orange
-                                  : widget.task.toDoImportant == 1
-                                      ? Colors.green
-                                      : Colors.grey),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 20,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(widget.task.toDoName),
-                            Text(
-                              widget.task.toDoDate.day.toString() +
-                                  '.' +
-                                  widget.task.toDoDate.month.toString(),
-                              style: TextStyle(color: Colors.grey),
+                      Row(
+                        children: [
+                          Icon(IconData(59744, fontFamily: 'MaterialIcons'),
+                              color: Colors.grey),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 20,
                             ),
-                          ],
-                        ),
-                      )
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(widget.task.toDoName),
+                                Text(
+                                  widget.task.toDoDate.day.toString() +
+                                      '.' +
+                                      widget.task.toDoDate.month.toString(),
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      widget.task.toDoImportant == 0
+                          ? Container()
+                          : Container(
+                              margin: const EdgeInsets.only(right: 20),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: widget.task.toDoImportant == 2
+                                      ? colorsForImportance[2]
+                                      : colorsForImportance[1]),
+                              height: 10,
+                              width: 10,
+                            )
                     ],
                   ),
                 ));
