@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_application/page/addRoute.dart';
-import 'package:to_do_application/widgets/bottomMenu.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/dbhelper.dart';

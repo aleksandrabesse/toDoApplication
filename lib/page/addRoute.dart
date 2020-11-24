@@ -46,9 +46,10 @@ class _AddRouteState extends State<AddRoute> {
     final int id = await DatabaseHelper.instance.insertTask(newToDo);
     newToDo.changeToDoID = id;
     widget._adder(newToDo);
-    print(newToDo);
+    Navigator.of(context).pop();
   }
 
+  List<double> sizeOfImportant = [15, 15, 15];
   @override
   Widget build(BuildContext context) {
     double height =
@@ -251,29 +252,59 @@ class _AddRouteState extends State<AddRoute> {
                           ),
                           Row(
                             children: [
-                              Container(
-                                margin: const EdgeInsets.only(right: 20),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: colorsForImportance[0]),
-                                height: 10,
-                                width: 10,
+                              InkWell(
+                                onTap: () {
+                                  newToDo.changeImportant = 0;
+                                  setState(() {
+                                    sizeOfImportant[0] = 20;
+                                    sizeOfImportant[1] = 15;
+                                    sizeOfImportant[2] = 15;
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 20),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: colorsForImportance[0]),
+                                  height: sizeOfImportant[0],
+                                  width: sizeOfImportant[0],
+                                ),
                               ),
-                              Container(
-                                margin: const EdgeInsets.only(right: 20),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: colorsForImportance[1]),
-                                height: 10,
-                                width: 10,
+                              InkWell(
+                                onTap: () {
+                                  newToDo.changeImportant = 1;
+                                  setState(() {
+                                    sizeOfImportant[0] = 15;
+                                    sizeOfImportant[1] = 20;
+                                    sizeOfImportant[2] = 15;
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 20),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: colorsForImportance[1]),
+                                  height: sizeOfImportant[1],
+                                  width: sizeOfImportant[1],
+                                ),
                               ),
-                              Container(
-                                margin: const EdgeInsets.only(right: 20),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: colorsForImportance[2]),
-                                height: 10,
-                                width: 10,
+                              InkWell(
+                                onTap: () {
+                                  newToDo.changeImportant = 2;
+                                  setState(() {
+                                    sizeOfImportant[0] = 15;
+                                    sizeOfImportant[1] = 15;
+                                    sizeOfImportant[2] = 20;
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 20),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: colorsForImportance[2]),
+                                  height: sizeOfImportant[2],
+                                  width: sizeOfImportant[2],
+                                ),
                               ),
                             ],
                           ),

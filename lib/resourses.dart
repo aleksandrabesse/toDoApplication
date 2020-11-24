@@ -64,6 +64,34 @@ String date(DateTime tm) {
   return month;
 }
 
+String weekDay(DateTime tm) {
+  String month;
+  switch (tm.weekday) {
+    case 1:
+      month = "пн";
+      break;
+    case 2:
+      month = "вт";
+      break;
+    case 3:
+      month = "ср";
+      break;
+    case 4:
+      month = "чт";
+      break;
+    case 5:
+      month = "пт";
+      break;
+    case 6:
+      month = "сб";
+      break;
+    case 7:
+      month = "вс";
+      break;
+   
+  }
+  return month;
+}
 const List<List<Color>> colors = [
   [const Color(0xFFF9957F), const Color(0xFFF2F5D0)],
   [const Color(0xFF9600FF), const Color(0xFFAEBAF8)],

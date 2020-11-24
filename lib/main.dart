@@ -201,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage>
                                       builder: (context) => SecondRoute(
                                           proj[index],
                                           appBar,
-                                          colors[indexOfColor],
+                                          colors[indexOfColor][0],
                                           tasks)));
                             },
                             onHorizontalDragStart: (details) {
