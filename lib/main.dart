@@ -5,6 +5,7 @@ import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/widgets/generateForList.dart';
 import 'package:to_do_application/widgets/lstOfTasks.dart';
 import 'package:to_do_application/widgets/floatingAction.dart';
+import 'package:to_do_application/widgets/newProject.dart';
 import 'dbhelper.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_application/dbhelper.dart';
@@ -75,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage>
   final dbHelper = DatabaseHelper.instance;
   List<ToDo> tasks = [];
   List<Project> proj = [];
+  bool isNewProject = false;
   bool isLoading = true;
   int toDoCount;
   List<Text> lstForUp;
@@ -94,23 +96,38 @@ class _MyHomePageState extends State<MyHomePage>
         .then((value) => value.forEach((element) {
               setState(() {
                 tasks.insert(0, ToDo.fromMap(element));
-                isLoading = false;
               });
-            }));
+            }))
+        .whenComplete(() {
+      setState(() {
+        isLoading = false;
+      });
+    });
+
     toDoCount = tasks.length;
-    lstForUp = [
-      Text(
-        date(DateTime.now()) + ", " + DateTime.now().day.toString(),
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-      ),
-      Text(textForDrawer + 'Анна!'),
-      Text('У вас ' +
-          toDoCount.toString() +
-          getTask(toDoCount) +
-          ' из ' +
-          proj.length.toString() +
-          getProject(proj.length))
-    ];
+    if (toDoCount == 0)
+      lstForUp = [
+        Text(
+          date(DateTime.now()) + ", " + DateTime.now().day.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        Text(textForDrawer + 'Анна!'),
+        Text('У вас ни одной задачи')
+      ];
+    else
+      lstForUp = [
+        Text(
+          date(DateTime.now()) + ", " + DateTime.now().day.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        Text(textForDrawer + 'Анна!'),
+        Text('У вас ' +
+            toDoCount.toString() +
+            getTask(toDoCount) +
+            ' из ' +
+            proj.length.toString() +
+            getProject(proj.length))
+      ];
   }
 
   void initState() {
@@ -139,6 +156,14 @@ class _MyHomePageState extends State<MyHomePage>
       index += 1;
   }
 
+  void _add(Project p) async {
+    // Project newP = Project(name, icon: icon);
+    //
+    proj.add(p);
+    final int id = await DatabaseHelper.instance.insertProject(p);
+    p.changeIdProj = id;
+  }
+
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
@@ -153,13 +178,22 @@ class _MyHomePageState extends State<MyHomePage>
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
-      // drawer: HelpDrawer(),
-      floatingActionButton: FancyFab((ToDo newTask) {
-        setState(() {
-          tasks.insert(0, newTask);
-          toDoCount += 1;
-        });
-      }, proj, colors[indexOfColor][0], context, appBar),
+      floatingActionButton: FancyFab(
+          (ToDo newTask) {
+            setState(() {
+              tasks.insert(0, newTask);
+              toDoCount += 1;
+            });
+          },
+          proj,
+          colors[indexOfColor][0],
+          context,
+          appBar,
+          () {
+            setState(() {
+              isNewProject = true;
+            });
+          }),
       appBar: appBar,
       body: Container(
         width: double.infinity,
@@ -188,56 +222,83 @@ class _MyHomePageState extends State<MyHomePage>
                           ),
                         ),
                       ),
-                      Container(
-                        height: height * 0.3,
-                        width: double.infinity,
-                        child: Center(
-                          child: GestureDetector(
-                            // TODO both side
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SecondRoute(
-                                          proj[index],
-                                          appBar,
-                                          colors[indexOfColor][0],
-                                          tasks)));
-                            },
-                            onHorizontalDragStart: (details) {
-                              setState(() {
-                                changeIndexForColor();
-                                changeIndexForProject();
-                              });
-                            },
-                            child: Container(
-                              height: height * 0.7 * 0.9,
-                              width: MediaQuery.of(context).size.width * 0.85,
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
+                      Center(
+                        child: isNewProject
+                            ? Container(
+                                height: height * 0.7,
+                                width: MediaQuery.of(context).size.width * 0.85,
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: NewProjCard(
+                                      colors[indexOfColor][0],
+                                      (Project temp) {
+                                        setState(() {
+                                          _add(temp);
+                                        });
+                                      },
+                                      height * 0.7,
+                                      () {
+                                        setState(() {
+                                          isNewProject = false;
+                                        });
+                                      }),
                                 ),
-                                child: ListOfTasks(
-                                    proj[index], colors[indexOfColor][0]),
+                              )
+                            : Container(
+                                height: height * 0.3,
+                                width: MediaQuery.of(context).size.width * 0.85,
+                                child: GestureDetector(
+                                  // TODO both side
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SecondRoute(
+                                                proj[index],
+                                                appBar,
+                                                colors[indexOfColor][0],
+                                                tasks)));
+                                  },
+                                  onHorizontalDragStart: (details) {
+                                    setState(() {
+                                      changeIndexForColor();
+                                      changeIndexForProject();
+                                    });
+                                  },
+                                  child: Container(
+                                    height: height * 0.7 * 0.9,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.85,
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                      ),
+                                      child: ListOfTasks(
+                                          proj[index], colors[indexOfColor][0]),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.85,
-                        height: height * 0.35,
-                        child: Column(
-                          children: [
-                            Container(
-                              child: Text('Предстоящие'),
-                              padding: const EdgeInsets.all(20),
-                            ),
-                            TaskForMain('Name', DateTime.now(),
-                                MediaQuery.of(context).size.width * 0.85),
-                          ],
-                        ),
-                      )
+                      isNewProject
+                          ? Container()
+                          : Container(
+                              width: MediaQuery.of(context).size.width * 0.85,
+                              height: height * 0.35,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Text('Предстоящие'),
+                                    padding: const EdgeInsets.all(20),
+                                  ),
+                                  TaskForMain('Name', DateTime.now(),
+                                      MediaQuery.of(context).size.width * 0.85),
+                                ],
+                              ),
+                            )
                     ],
                   ),
                 ),

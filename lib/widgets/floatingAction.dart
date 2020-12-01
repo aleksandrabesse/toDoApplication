@@ -3,15 +3,17 @@ import 'package:to_do_application/page/addRoute.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/dbhelper.dart';
-import 'package:to_do_application/widgets/newProj.dart';
+import 'package:to_do_application/page/newProjRoute.dart';
 
 class FancyFab extends StatefulWidget {
   final Function(ToDo) adder;
+  final Function() isNewProject;
   BuildContext context;
   Color color;
   List<Project> proj;
   AppBar appBar;
-  FancyFab(this.adder, this.proj, this.color,this.context, this.appBar);
+  FancyFab(this.adder, this.proj, this.color, this.context, this.appBar,
+      this.isNewProject);
   @override
   _FancyFabState createState() => _FancyFabState();
 }
@@ -75,14 +77,9 @@ class _FancyFabState extends State<FancyFab>
     isOpened = !isOpened;
   }
 
-  void _add(name, icon) async {
-    Project newP = Project(name, icon: icon);
-    widget.proj.add(newP);
-    final int id = await DatabaseHelper.instance.insertProject(newP);
-    newP.changeIdProj = id;
-  }
 
-  Widget image() {
+
+  Widget addNewTask() {
     _buttonColor = ColorTween(
       begin: widget.color,
       end: widget.color,
@@ -100,8 +97,8 @@ class _FancyFabState extends State<FancyFab>
         onPressed: () {
           _animationController.reverse();
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => AddRoute(widget.appBar, widget.adder,widget.color)));
-        
+              builder: (context) =>
+                  AddRoute(widget.appBar, widget.adder, widget.color)));
         },
         backgroundColor: _buttonColor.value,
         tooltip: 'Добавить задачу',
@@ -110,27 +107,17 @@ class _FancyFabState extends State<FancyFab>
     );
   }
 
-  Widget inbox() {
+  Widget addNewProject() {
     return Container(
       child: FloatingActionButton(
         heroTag: 'btn1',
         onPressed: () {
           _animationController.reverse();
-
-          showDialog(
-              context: context,
-              builder: (context) {
-                return Dialog(
-                  insetAnimationDuration: Duration(milliseconds: 400),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
-                  child: NewProj((String name, int icon) {
-                    setState(() {
-                      _add(name, icon);
-                    });
-                  }),
-                );
-              });
+          //   Navigator.of(context).push(MaterialPageRoute(
+          //       builder: (context) =>
+          //           NewProjRoute(widget.appBar, widget.color, _add)));
+          //
+          widget.isNewProject();
         },
         backgroundColor: _buttonColor.value,
         tooltip: 'Добавить проект',
@@ -139,7 +126,7 @@ class _FancyFabState extends State<FancyFab>
     );
   }
 
-  Widget toggle() {
+  Widget baseAddButton() {
     return Container(
       child: FloatingActionButton(
         heroTag: 'btn2',
@@ -165,7 +152,7 @@ class _FancyFabState extends State<FancyFab>
             _translateButton.value * 2.0,
             0.0,
           ),
-          child: image(),
+          child: addNewTask(),
         ),
         Transform(
           transform: Matrix4.translationValues(
@@ -173,9 +160,9 @@ class _FancyFabState extends State<FancyFab>
             _translateButton.value,
             0.0,
           ),
-          child: inbox(),
+          child: addNewProject(),
         ),
-        toggle(),
+        baseAddButton(),
       ],
     );
   }

@@ -25,7 +25,6 @@ class _ListOfTasksState extends State<ListOfTasks> {
         text = count.toString() + getTask(count);
       });
     });
-
   }
 
   void initState() {
@@ -35,63 +34,60 @@ class _ListOfTasksState extends State<ListOfTasks> {
   @override
   Widget build(BuildContext context) {
     getFuture();
-    return GestureDetector(
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: widget.color.withOpacity(0.5),
-                        width: 1.5,
-                      ),
-                      shape: BoxShape.circle,
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: widget.color.withOpacity(0.5),
+                      width: 1.5,
                     ),
-                    child: Icon(
-                      IconData(widget.p.getIconroj,
-                          fontFamily: 'MaterialIcons'),
-                      color: widget.color,
-                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    IconData(widget.p.getIconroj, fontFamily: 'MaterialIcons'),
+                    color: widget.color,
                   ),
                 ),
-                IconButton(icon: Icon(Icons.settings), onPressed: () {})
+              ),
+              IconButton(icon: Icon(Icons.settings), onPressed: () {})
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: [
+                    Align(
+                      child: Text(text),
+                      alignment: Alignment.centerLeft,
+                    ),
+                    Align(
+                      child: Text(
+                        widget.p.getNameProj,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 24),
+                      ),
+                      alignment: Alignment.centerLeft,
+                    ),
+                  ],
+                ),
               ],
             ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      Align(
-                        child: Text(text),
-                        alignment: Alignment.centerLeft,
-                      ),
-                      Align(
-                        child: Text(
-                          widget.p.getNameProj,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 24),
-                        ),
-                        alignment: Alignment.centerLeft,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -107,7 +107,7 @@ class _AddRouteState extends State<AddRoute> {
                                   fontWeight: FontWeight.w700,
                                   fontSize: Theme.of(context)
                                       .textTheme
-                                      .body1
+                                      .bodyText1
                                       .fontSize),
                             ),
                             alignment: Alignment.centerLeft,
@@ -137,10 +137,10 @@ class _AddRouteState extends State<AddRoute> {
                                 child: TimePickerSpinner(
                                   normalTextStyle: Theme.of(context)
                                       .textTheme
-                                      .body1
+                                      .bodyText1
                                       .copyWith(color: Colors.grey),
                                   highlightedTextStyle:
-                                      Theme.of(context).textTheme.body1,
+                                      Theme.of(context).textTheme.bodyText1,
                                   itemWidth: 20,
                                   is24HourMode: true,
                                   onTimeChange: (time) {
@@ -163,7 +163,7 @@ class _AddRouteState extends State<AddRoute> {
                                     fontWeight: FontWeight.w700,
                                     fontSize: Theme.of(context)
                                         .textTheme
-                                        .body1
+                                        .bodyText1
                                         .fontSize),
                               ),
                               alignment: Alignment.centerLeft,
@@ -200,7 +200,7 @@ class _AddRouteState extends State<AddRoute> {
                                   fontWeight: FontWeight.w700,
                                   fontSize: Theme.of(context)
                                       .textTheme
-                                      .body1
+                                      .bodyText1
                                       .fontSize),
                             ),
                             alignment: Alignment.centerLeft,
@@ -210,7 +210,7 @@ class _AddRouteState extends State<AddRoute> {
                               value: newToDo.toDoProj,
                               hint: Text(
                                 'Выбрать проект',
-                                style: Theme.of(context).textTheme.body1,
+                                style: Theme.of(context).textTheme.bodyText1,
                               ),
                               items: proj.map((e) {
                                 return DropdownMenuItem(
@@ -245,7 +245,7 @@ class _AddRouteState extends State<AddRoute> {
                                   fontWeight: FontWeight.w700,
                                   fontSize: Theme.of(context)
                                       .textTheme
-                                      .body1
+                                      .bodyText1
                                       .fontSize),
                             ),
                             alignment: Alignment.centerLeft,

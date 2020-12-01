@@ -3,8 +3,9 @@ import 'package:to_do_application/classes/multoSelectChip.dart';
 
 class NewProj extends StatefulWidget {
   final Function(String, int) _addProj;
+  Color color;
   int chooisen = 58712;
-  NewProj(this._addProj);
+  NewProj(this._addProj, this.color);
   @override
   _NewProjState createState() => _NewProjState();
 }
@@ -28,7 +29,7 @@ class _NewProjState extends State<NewProj> {
           children: [
             TextField(
               controller: _tx,
-              autofocus: true,
+              autofocus: false,
               textCapitalization: TextCapitalization.sentences,
               maxLines: 1,
               decoration: InputDecoration(
@@ -37,18 +38,19 @@ class _NewProjState extends State<NewProj> {
             ),
             Container(
               height: MediaQuery.of(context).size.height * 0.25,
+              width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
                 child: Wrap(
                   alignment: WrapAlignment.center,
                   direction: Axis.horizontal,
-                  spacing: 4.0,
-                  runSpacing: 4.0,
+                  // spacing: 4.0,
+                  // runSpacing: 4.0,
                   children: [
                     MultiSelectChip((int c) {
                       setState(() {
                         widget.chooisen = c;
                       });
-                    })
+                    }, widget.color)
                   ],
                 ),
               ),

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 
 class MultiSelectChip extends StatefulWidget {
-  int chooise = 58712;
+  Color color;
   Function(int) _addProj;
-  MultiSelectChip(this._addProj);
+  MultiSelectChip(this._addProj, this.color);
   @override
   _MultiSelectChipState createState() => _MultiSelectChipState();
 }
 
 class _MultiSelectChipState extends State<MultiSelectChip> {
   List<bool> selectedChoices = List();
+  int chooise = 58712;
   List<int> icons = List();
   void initState() {
-    for (int i = 58712; i <= 60158; i += 9) {
+    for (int i = 58712; i <= 60158; i += 3) {
       icons.add(i);
       selectedChoices.add(false);
     }
@@ -25,21 +26,20 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
     icons.forEach((item) {
       choices.add(
         Container(
-          padding: const EdgeInsets.all(2.0),
-          child: ChoiceChip(
-            label: Text(''),
-            avatar:Icon(IconData(item, fontFamily: 'MaterialIcons')),
-            selected: selectedChoices[icons.indexOf(item)],
-            onSelected: (bool selected) {
-              selectedChoices[icons.indexOf(widget.chooise)] = false;
-              widget.chooise = item;
-              if (selected) widget._addProj(item);
-              setState(() {
-                selectedChoices[icons.indexOf(item)] = selected;
-                print(selectedChoices[0]);
-              });
-            },
-          ),
+          color: selectedChoices[icons.indexOf(item)]
+              ? widget.color.withOpacity(0.8)
+              : Colors.white,
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+              child: Icon(IconData(item, fontFamily: 'MaterialIcons')),
+              onTap: () {
+                widget._addProj(item);
+                setState(() {
+                  selectedChoices[icons.indexOf(chooise)] = false;
+                  selectedChoices[icons.indexOf(item)] = true;
+                });
+                chooise = item;
+              }),
         ),
       );
     });
@@ -51,8 +51,8 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
     return Wrap(
         alignment: WrapAlignment.center,
         direction: Axis.horizontal,
-        spacing: 4.0, // gap between adjacent chips
-        runSpacing: 4.0, // gap between lines
+        spacing: 6.0, // gap between adjacent chips
+        runSpacing: 6.0, // gap between lines
         children: _buildChoiceList());
   }
 }
