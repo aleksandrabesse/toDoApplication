@@ -140,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage>
     super.initState();
   }
 
-  void changeIndexForColor() {
+  void changeIndexForColorLeft() {
     int n = colors.length;
     if (indexOfColor + 1 == n)
       indexOfColor = 0;
@@ -148,12 +148,28 @@ class _MyHomePageState extends State<MyHomePage>
       indexOfColor += 1;
   }
 
-  void changeIndexForProject() {
+  void changeIndexForProjectLeft() {
     int n = proj.length;
     if (index + 1 == n)
       index = 0;
     else
       index += 1;
+  }
+
+  void changeIndexForColorRight() {
+    int n = colors.length;
+    if (indexOfColor - 1 == -1)
+      indexOfColor = n - 1;
+    else
+      indexOfColor -= 1;
+  }
+
+  void changeIndexForProjectRight() {
+    int n = proj.length;
+    if (index - 1 == -1)
+      index = n - 1;
+    else
+      index -= 1;
   }
 
   void _add(Project p) async {
@@ -164,6 +180,7 @@ class _MyHomePageState extends State<MyHomePage>
     p.changeIdProj = id;
   }
 
+  bool isDrag = false;
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
@@ -172,10 +189,14 @@ class _MyHomePageState extends State<MyHomePage>
       textTheme: Theme.of(context).textTheme,
       elevation: 0.0,
     );
+
     double height =
         MediaQuery.of(context).size.height - appBar.preferredSize.height;
-    double hForCard = height * 0.65;
+    double hForCard = height * 0.6;
+    double width = MediaQuery.of(context).size.width;
     double wForCard = MediaQuery.of(context).size.width * 0.85;
+    double locationLeft1 = 150;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
@@ -197,107 +218,69 @@ class _MyHomePageState extends State<MyHomePage>
             });
           }),
       appBar: appBar,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: SafeArea(
-          child: isLoading
-              ? Container(child: Center(child: CircularProgressIndicator()))
-              : SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        height: height * 0.2,
-                        width: wForCard,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: lstForUp.map((e) {
-                              return Align(
-                                child: e,
-                                alignment: Alignment.centerLeft,
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: isNewProject
-                            ? Container(
-                                height: hForCard,
-                                width: wForCard * 0.15,
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  child: NewProjCard(
-                                      colors[indexOfColor][0],
-                                      (Project temp) {
-                                        setState(() {
-                                          _add(temp);
-                                        });
-                                      },
-                                      height * 0.7,
-                                      () {
-                                        setState(() {
-                                          isNewProject = false;
-                                        });
-                                      }),
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: height + appBar.preferredSize.height,
+        child: Container(
+          child: SafeArea(
+              child: isLoading
+                  ? Container(child: Center(child: CircularProgressIndicator()))
+                  : SizedBox(
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: width * 0.05,
+                            child: Container(
+                              height: height * 0.2,
+                              width: wForCard,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: lstForUp.map((e) {
+                                    return Align(
+                                      child: e,
+                                      alignment: Alignment.centerLeft,
+                                    );
+                                  }).toList(),
                                 ),
-                              )
-                            : Stack(children: [
-                                Positioned(
-                                  child: Draggable(
-                                    onDragEnd: (drag) {
-                                      print(wForCard);
-                                      print(drag.offset.dy);
-                                      setState(() {
-                                        if (drag.offset.dy > wForCard / 2) {
-                                          changeIndexForColor();
-                                          changeIndexForProject();
-                                        }
-                                      });
-                                    },
-                                    axis: Axis.horizontal,
-                                    childWhenDragging: Container(),
-                                    feedback: Container(
-                                      height: hForCard,
-                                      width: wForCard * 0.80,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SecondRoute(
-                                                          proj[index],
-                                                          appBar,
-                                                          colors[indexOfColor]
-                                                              [0],
-                                                          tasks)));
-                                        },
-                                        child: Container(
-                                          height: hForCard,
-                                          width: wForCard,
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                            child: ListOfTasks(proj[index],
-                                                colors[indexOfColor][0]),
-                                          ),
-                                        ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: height * 0.2,
+                            left: isDrag ? locationLeft1 : width * 0.05,
+                            child: isNewProject
+                                ? Container(
+                                    height: hForCard,
+                                    width: wForCard,
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
                                       ),
+                                      child: NewProjCard(
+                                          colors[indexOfColor][0],
+                                          (Project temp) {
+                                            setState(() {
+                                              _add(temp);
+                                            });
+                                          },
+                                          hForCard,
+                                          () {
+                                            setState(() {
+                                              isNewProject = false;
+                                            });
+                                          }),
                                     ),
+                                  )
+                                : Draggable(
+                                    axis: Axis.horizontal,
                                     child: Container(
                                       height: hForCard,
                                       width: wForCard,
                                       child: GestureDetector(
-                                        // TODO both side
                                         onTap: () {
                                           Navigator.push(
                                               context,
@@ -310,40 +293,55 @@ class _MyHomePageState extends State<MyHomePage>
                                                               [0],
                                                           tasks)));
                                         },
-                                        // onHorizontalDragUpdate: (details) {},
-                                        // onHorizontalDragStart: (details) {
-                                        //   setState(() {
-                                        //     changeIndexForColor();
-                                        //     changeIndexForProject();
-                                        //   });
-                                        // },
-                                        child: Container(
-                                          height: hForCard,
-                                          width: wForCard,
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                            child: ListOfTasks(proj[index],
-                                                colors[indexOfColor][0]),
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
                                           ),
+                                          child: ListOfTasks(proj[index],
+                                              colors[indexOfColor][0]),
                                         ),
                                       ),
                                     ),
+                                    feedback: Container(
+                                      height: hForCard,
+                                      width: wForCard,
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15.0),
+                                        ),
+                                        child: ListOfTasks(proj[index],
+                                            colors[indexOfColor][0]),
+                                      ),
+                                    ),
+                                    childWhenDragging: Container(),
+                                    onDragEnd: (drag) {
+                                      double change = drag.offset.dx;
+                                      if (change > wForCard / 2) {
+                                        setState(() {
+                                          changeIndexForColorRight();
+                                          changeIndexForProjectRight();
+                                        });
+                                      }
+                                      if (change < -wForCard / 2) {
+                                        setState(() {
+                                          changeIndexForColorLeft();
+                                          changeIndexForProjectLeft();
+                                        });
+                                      }
+                                    },
                                   ),
-                                ),
-                              ]),
-                      )
-                    ],
-                  ),
-                ),
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: colors[indexOfColor]),
+                          ),
+                        ],
+                      ),
+                    )),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: colors[indexOfColor]),
+          ),
         ),
       ),
     );
