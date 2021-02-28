@@ -174,6 +174,8 @@ class _MyHomePageState extends State<MyHomePage>
     );
     double height =
         MediaQuery.of(context).size.height - appBar.preferredSize.height;
+    double hForCard = height * 0.65;
+    double wForCard = MediaQuery.of(context).size.width * 0.85;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
@@ -207,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage>
                     children: [
                       Container(
                         height: height * 0.2,
-                        width: MediaQuery.of(context).size.width * 0.85,
+                        width: wForCard,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
@@ -225,8 +227,8 @@ class _MyHomePageState extends State<MyHomePage>
                       Center(
                         child: isNewProject
                             ? Container(
-                                height: height * 0.7,
-                                width: MediaQuery.of(context).size.width * 0.85,
+                                height: hForCard,
+                                width: wForCard * 0.15,
                                 child: Card(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15.0),
@@ -246,59 +248,93 @@ class _MyHomePageState extends State<MyHomePage>
                                       }),
                                 ),
                               )
-                            : Container(
-                                height: height * 0.3,
-                                width: MediaQuery.of(context).size.width * 0.85,
-                                child: GestureDetector(
-                                  // TODO both side
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SecondRoute(
-                                                proj[index],
-                                                appBar,
-                                                colors[indexOfColor][0],
-                                                tasks)));
-                                  },
-                                  onHorizontalDragStart: (details) {
-                                    setState(() {
-                                      changeIndexForColor();
-                                      changeIndexForProject();
-                                    });
-                                  },
-                                  child: Container(
-                                    height: height * 0.7 * 0.9,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.85,
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
+                            : Stack(children: [
+                                Positioned(
+                                  child: Draggable(
+                                    onDragEnd: (drag) {
+                                      print(wForCard);
+                                      print(drag.offset.dy);
+                                      setState(() {
+                                        if (drag.offset.dy > wForCard / 2) {
+                                          changeIndexForColor();
+                                          changeIndexForProject();
+                                        }
+                                      });
+                                    },
+                                    axis: Axis.horizontal,
+                                    childWhenDragging: Container(),
+                                    feedback: Container(
+                                      height: hForCard,
+                                      width: wForCard * 0.80,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SecondRoute(
+                                                          proj[index],
+                                                          appBar,
+                                                          colors[indexOfColor]
+                                                              [0],
+                                                          tasks)));
+                                        },
+                                        child: Container(
+                                          height: hForCard,
+                                          width: wForCard,
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            child: ListOfTasks(proj[index],
+                                                colors[indexOfColor][0]),
+                                          ),
+                                        ),
                                       ),
-                                      child: ListOfTasks(
-                                          proj[index], colors[indexOfColor][0]),
+                                    ),
+                                    child: Container(
+                                      height: hForCard,
+                                      width: wForCard,
+                                      child: GestureDetector(
+                                        // TODO both side
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SecondRoute(
+                                                          proj[index],
+                                                          appBar,
+                                                          colors[indexOfColor]
+                                                              [0],
+                                                          tasks)));
+                                        },
+                                        // onHorizontalDragUpdate: (details) {},
+                                        // onHorizontalDragStart: (details) {
+                                        //   setState(() {
+                                        //     changeIndexForColor();
+                                        //     changeIndexForProject();
+                                        //   });
+                                        // },
+                                        child: Container(
+                                          height: hForCard,
+                                          width: wForCard,
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            child: ListOfTasks(proj[index],
+                                                colors[indexOfColor][0]),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                      ),
-                      isNewProject
-                          ? Container()
-                          : Container(
-                              width: MediaQuery.of(context).size.width * 0.85,
-                              height: height * 0.35,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    child: Text('Предстоящие'),
-                                    padding: const EdgeInsets.all(20),
-                                  ),
-                                  TaskForMain('Name', DateTime.now(),
-                                      MediaQuery.of(context).size.width * 0.85),
-                                ],
-                              ),
-                            )
+                              ]),
+                      )
                     ],
                   ),
                 ),

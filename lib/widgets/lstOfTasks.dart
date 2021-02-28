@@ -28,12 +28,12 @@ class _ListOfTasksState extends State<ListOfTasks> {
   }
 
   void initState() {
+    getFuture();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    getFuture();
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(

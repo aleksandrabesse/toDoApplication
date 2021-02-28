@@ -1,6 +1,5 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'classes/toDo.dart';
 import 'package:to_do_application/classes/proj.dart';
 
 class DatabaseHelper {

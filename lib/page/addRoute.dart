@@ -175,11 +175,14 @@ class _AddRouteState extends State<AddRoute> {
                             autofocus: false,
                             controller: tx,
                             onSubmitted: (text) {
-                              newToDo.changeToDoName = tx.text;
+                              if (text.isNotEmpty)
+                              {
+newToDo.changeToDoName = tx.text;
+                              }
                             },
-                            onChanged: (text) {
-                              newToDo.changeToDoName = tx.text;
-                            },
+                            // onChanged: (text) {
+                            //   newToDo.changeToDoName = tx.text;
+                            // },
                             decoration: InputDecoration(
                                 labelText: 'Введите задачу',
                                 fillColor: Colors.white,

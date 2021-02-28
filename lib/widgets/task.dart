@@ -50,7 +50,7 @@ class _TaskState extends State<Task> {
                     children: [
                       Row(
                         children: [
-                          Icon(IconData(59744, fontFamily: 'MaterialIcons'),
+                           Icon(const IconData(59744, fontFamily: 'MaterialIcons'),
                               color: Colors.grey),
                           Padding(
                             padding: const EdgeInsets.only(
