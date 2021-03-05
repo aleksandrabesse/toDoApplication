@@ -12,16 +12,11 @@ import 'package:to_do_application/dbhelper.dart';
 import 'classes/proj.dart';
 import 'package:to_do_application/resourses.dart';
 import 'package:to_do_application/page/listOfTasksRoute.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-  //   // statusBarColor: Colors.transparent,
-  //   // statusBarBrightness: Brightness.dark,
-  //   // systemNavigationBarColor: Colors.white,
-  //   // systemNavigationBarIconBrightness: Brightness.dark,
-  //   // systemNavigationBarDividerColor: Colors.transparent,
-  // ));
+
   runApp(MyApp());
 }
 
@@ -29,21 +24,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      supportedLocales: [const Locale('ru')],
+      localizationsDelegates: [GlobalMaterialLocalizations.delegate],
       title: 'Flutter Demo',
-      // darkTheme: ThemeData(
-      //   floatingActionButtonTheme:
-      //       FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
-      //   // textTheme: TextTheme(
-      //   //     body1: TextStyle(color: Colors.white),
-      //   //     body2: TextStyle(color: Colors.black)),
-      //   // iconTheme: IconThemeData(
-      //   //   color: Colors.white,
-      //   // ),
-      //   brightness: Brightness.dark,
-      //   appBarTheme: AppBarTheme(
-      //       color: Colors.transparent,
-      //       iconTheme: IconThemeData(color: Colors.black)),
-      // ),
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -51,7 +34,7 @@ class MyApp extends StatelessWidget {
             .textTheme
             .apply(fontSizeFactor: 1.0, fontSizeDelta: 2.0),
         brightness: Brightness.light,
-        primarySwatch: Colors.blue,
+        // primarySwatch: Colors.blue,
         appBarTheme: AppBarTheme(
             color: Colors.transparent,
             iconTheme: IconThemeData(color: Colors.white)),
@@ -191,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage>
     );
 
     double height =
-        (MediaQuery.of(context).size.height - appBar.preferredSize.height) ;
+        (MediaQuery.of(context).size.height - appBar.preferredSize.height);
     double hForCard = height * 0.6;
     double width = MediaQuery.of(context).size.width;
     double wForCard = MediaQuery.of(context).size.width * 0.9;
@@ -199,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage>
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
+      // resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
       floatingActionButton: FancyFab(
           (ToDo newTask) {
@@ -211,7 +194,6 @@ class _MyHomePageState extends State<MyHomePage>
           proj,
           colors[indexOfColor][0],
           context,
-         
           () {
             setState(() {
               isNewProject = true;
@@ -284,14 +266,32 @@ class _MyHomePageState extends State<MyHomePage>
                                         onTap: () {
                                           Navigator.push(
                                               context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SecondRoute(
-                                                          proj[index],
-                                                          appBar,
-                                                          colors[indexOfColor]
-                                                              [0],
-                                                          tasks)));
+                                              ScaleRoute(
+                                                  page: SecondRoute(
+                                                      proj[index],
+                                                      appBar,
+                                                      colors[indexOfColor][0],
+                                                      tasks))
+                                              // CupertinoPageRoute(
+                                              //   builder: (context) =>
+                                              //       // ScaleRoute(page: SecondRoute());
+                                              //       SecondRoute(
+                                              //           proj[index],
+                                              //           appBar,
+                                              //           colors[indexOfColor][0],
+                                              //           tasks),
+                                              // ),
+
+                                              );
+                                          // MaterialPageRoute(
+                                          //     builder: (context) =>
+                                          //         SecondRoute(
+                                          //             proj[index],
+                                          //             appBar,
+                                          //             colors[indexOfColor]
+                                          //                 [0],
+                                          //             tasks),
+                                          //             ),
                                         },
                                         child: Card(
                                           shape: RoundedRectangleBorder(
@@ -346,4 +346,35 @@ class _MyHomePageState extends State<MyHomePage>
       ),
     );
   }
+}
+
+class ScaleRoute extends PageRouteBuilder {
+  final Widget page;
+  ScaleRoute({this.page})
+      : super(
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              page,
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) =>
+              ScaleTransition(
+            scale: Tween<double>(
+              begin: 0.0,
+              end: 1.0,
+            ).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Curves.fastOutSlowIn,
+              ),
+            ),
+            child: child,
+          ),
+        );
 }

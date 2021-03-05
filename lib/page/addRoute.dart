@@ -63,10 +63,28 @@ class _AddRouteState extends State<AddRoute> {
     );
     Future<void> _selectDate(BuildContext context) async {
       final DateTime pickedDate = await showDatePicker(
+          locale: Locale('ru', "RU"),
           helpText: 'Введите дату',
+          fieldHintText: 'dd/mm/yy',
+          fieldLabelText: 'Введите дату',
+          errorFormatText: 'Введите дату в формате dd/mm/yy',
+          errorInvalidText: '4',
           cancelText: 'Отмена',
           confirmText: 'Ок',
           context: context,
+          builder: (context, child) {
+            return Theme(
+              data: ThemeData.light().copyWith(
+                primaryIconTheme: IconThemeData(
+                    color: widget.color), //OK/Cancel button text color
+                primaryColor: widget.color, //Head background
+                accentColor: widget.color, //selection color
+                // dialogBackgroundColor: widget.color,//Background color
+              ),
+              child: child,
+            );
+          },
+
           // initialDatePickerMode: DatePickerEntryMode.input,
           initialDate: DateTime.now(),
           firstDate: DateTime(2021),
@@ -87,7 +105,8 @@ class _AddRouteState extends State<AddRoute> {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
+      // resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
       appBar: appBar,
       body: SafeArea(
@@ -232,6 +251,8 @@ class _AddRouteState extends State<AddRoute> {
                                 child: GestureDetector(
                                   onTap: () async {
                                     var time = await showTimePicker(
+                                    
+                                        // locale: Locale('ru', "RU"),
                                         cancelText: 'Отмена',
                                         confirmText: 'Ок',
                                         helpText: 'Введите время',
