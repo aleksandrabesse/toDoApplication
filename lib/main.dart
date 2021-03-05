@@ -191,10 +191,10 @@ class _MyHomePageState extends State<MyHomePage>
     );
 
     double height =
-        MediaQuery.of(context).size.height - appBar.preferredSize.height;
+        (MediaQuery.of(context).size.height - appBar.preferredSize.height) ;
     double hForCard = height * 0.6;
     double width = MediaQuery.of(context).size.width;
-    double wForCard = MediaQuery.of(context).size.width * 0.85;
+    double wForCard = MediaQuery.of(context).size.width * 0.9;
     double locationLeft1 = 150;
 
     return Scaffold(
@@ -211,7 +211,7 @@ class _MyHomePageState extends State<MyHomePage>
           proj,
           colors[indexOfColor][0],
           context,
-          appBar,
+         
           () {
             setState(() {
               isNewProject = true;

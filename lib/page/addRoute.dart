@@ -5,12 +5,13 @@ import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'package:to_do_application/resourses.dart';
+import 'dart:math';
+import 'package:intl/intl.dart';
 
 class AddRoute extends StatefulWidget {
-  AppBar appBar;
   final Function _adder;
   Color color;
-  AddRoute(this.appBar, this._adder, this.color);
+  AddRoute(this._adder, this.color);
 
   @override
   _AddRouteState createState() => _AddRouteState();
@@ -49,58 +50,140 @@ class _AddRouteState extends State<AddRoute> {
     Navigator.of(context).pop();
   }
 
+  bool isSelectedDate = false;
+  bool isSelectedTime = false;
   List<double> sizeOfImportant = [15, 15, 15];
   @override
   Widget build(BuildContext context) {
-    double height =
-        MediaQuery.of(context).size.height - widget.appBar.preferredSize.height;
+    AppBar appBar = AppBar(
+      backgroundColor: widget.color,
+      iconTheme: Theme.of(context).iconTheme,
+      textTheme: Theme.of(context).textTheme,
+      elevation: 0.0,
+    );
+    Future<void> _selectDate(BuildContext context) async {
+      final DateTime pickedDate = await showDatePicker(
+          helpText: 'Введите дату',
+          cancelText: 'Отмена',
+          confirmText: 'Ок',
+          context: context,
+          // initialDatePickerMode: DatePickerEntryMode.input,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2021),
+          lastDate: DateTime(2050));
+
+      if (pickedDate != null && pickedDate != DateTime.now())
+        setState(() {
+          DateTime d = new DateTime(pickedDate.year, pickedDate.month,
+              pickedDate.day, selectedDate.hour, selectedDate.minute);
+          selectedDate = d;
+          isSelectedDate = true;
+        });
+    }
+
+    double height = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        resizeToAvoidBottomPadding: false,
-        extendBodyBehindAppBar: true,
-        appBar: widget.appBar,
-        body: Container(
-          color: widget.color,
-          height: double.infinity,
-          width: double.infinity,
-          child: SafeArea(
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
+      extendBodyBehindAppBar: true,
+      appBar: appBar,
+      body: SafeArea(
+        child: Column(children: [
+          ClipPath(
+            child: Container(
+              color: widget.color,
+              height: height * 0.25,
+              width: width,
+              padding: const EdgeInsets.all(20),
               child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                height: height * 0.1,
-                width: double.infinity,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Добавить задачу',
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        'Добавить задачу',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      )),
+                  Align(
+                    alignment: Alignment(-1, -1),
+                    child: TextField(
+                      textCapitalization: TextCapitalization.sentences,
+                      maxLines: 1,
+
                       style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 24,
+                          color: Colors.white, fontWeight: FontWeight.w500),
+                      autofocus: false,
+                      controller: tx,
+                      onSubmitted: (text) {
+                        if (text.isNotEmpty) {
+                          newToDo.changeToDoName = tx.text;
+                        }
+                      },
+                      // onChanged: (text) {
+                      //   newToDo.changeToDoName = tx.text;
+                      // },
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.done,
+                          color: Colors.white,
+                        ),
+                        labelStyle: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w300,
+                        ),
+                        labelText: 'Введите задачу',
+                        fillColor: HSLColor.fromColor(widget.color)
+                            .withSaturation(
+                                HSLColor.fromColor(widget.color).saturation *
+                                    0.95)
+                            .toColor(),
+                        filled: true,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                          ),
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        // border: OutlineInputBorder(
+                        //     borderRadius: BorderRadius.circular(15),
+                        //     gapPadding: 1,
+                        //     borderSide: BorderSide(color: Colors.red)
+                        //     )
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-              Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(50)),
-                  ),
-                  width: double.infinity,
-                  height: height * 0.85,
-                  padding: const EdgeInsets.only(
-                      left: 20, top: 30, right: 20, bottom: 30),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: [
-                          Align(
+            ),
+            clipper: BottomWaveClipper(),
+          ),
+          Container(
+              width: width,
+              height: height * 0.75,
+              padding: const EdgeInsets.only(
+                  left: 20, top: 30, right: 20, bottom: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    flex: 4,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 18.0),
+                          child: Align(
                             child: Text(
                               'Дата и время',
                               style: TextStyle(
@@ -112,224 +195,269 @@ class _AddRouteState extends State<AddRoute> {
                             ),
                             alignment: Alignment.centerLeft,
                           ),
-                          Row(
-                            children: [
-                              Flexible(
+                        ),
+                        Row(
+                          children: [
+                            Flexible(
                                 flex: 2,
-                                child: DatePickerWidget(
-                                  looping: false,
-                                  firstDate: DateTime.now(),
-                                  dateFormat: "dd(E)-MMMM-yyyy",
-                                  onChange: (DateTime newDate, _) {
-                                    selectedDate = newDate;
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _selectDate(context);
                                   },
-                                  locale: DatePicker.localeFromString('ru'),
-                                  pickerTheme: DateTimePickerTheme(
-                                    backgroundColor: Colors.transparent,
-                                    itemTextStyle:
-                                        TextStyle(color: Colors.black),
-                                    dividerColor: widget.color,
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                flex: 1,
-                                child: TimePickerSpinner(
-                                  normalTextStyle: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .copyWith(color: Colors.grey),
-                                  highlightedTextStyle:
-                                      Theme.of(context).textTheme.bodyText1,
-                                  itemWidth: 20,
-                                  is24HourMode: true,
-                                  onTimeChange: (time) {
-                                    selectedTime = time;
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Align(
-                              child: Text(
-                                'Название задачи',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .fontSize),
-                              ),
-                              alignment: Alignment.centerLeft,
-                            ),
-                          ),
-                          TextField(
-                            textCapitalization: TextCapitalization.sentences,
-                            maxLines: 1,
-                            autofocus: false,
-                            controller: tx,
-                            onSubmitted: (text) {
-                              if (text.isNotEmpty)
-                              {
-newToDo.changeToDoName = tx.text;
-                              }
-                            },
-                            // onChanged: (text) {
-                            //   newToDo.changeToDoName = tx.text;
-                            // },
-                            decoration: InputDecoration(
-                                labelText: 'Введите задачу',
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    gapPadding: 1,
-                                    borderSide:
-                                        BorderSide(color: Colors.green))),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Align(
-                            child: Text(
-                              'Проект',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .fontSize),
-                            ),
-                            alignment: Alignment.centerLeft,
-                          ),
-                          DropdownButton(
-                              isExpanded: true,
-                              value: newToDo.toDoProj,
-                              hint: Text(
-                                'Выбрать проект',
-                                style: Theme.of(context).textTheme.bodyText1,
-                              ),
-                              items: proj.map((e) {
-                                return DropdownMenuItem(
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(e.getNameProj),
-                                      Icon(
-                                        IconData(e.getIconroj,
-                                            fontFamily: 'MaterialIcons'),
+                                      Flexible(
+                                        flex: 1,
+                                        child: Icon(
+                                          Icons.date_range_outlined,
+                                          color: isSelectedDate
+                                              ? widget.color
+                                              : Colors.black,
+                                        ),
                                       ),
+                                      Flexible(
+                                        flex: 3,
+                                        child: Container(
+                                          child: Center(
+                                            child: Text(DateFormat('d MM yyyy')
+                                                .format(selectedDate)),
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
-                                  value: e.getIdProj,
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  newToDo.changeToDoProj = value;
-                                });
-                              }),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Align(
-                            child: Text(
-                              'Приоритет',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .fontSize),
-                            ),
-                            alignment: Alignment.centerLeft,
-                          ),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  newToDo.changeImportant = 0;
-                                  setState(() {
-                                    sizeOfImportant[0] = 20;
-                                    sizeOfImportant[1] = 15;
-                                    sizeOfImportant[2] = 15;
-                                  });
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 20),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: colorsForImportance[0]),
-                                  height: sizeOfImportant[0],
-                                  width: sizeOfImportant[0],
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  newToDo.changeImportant = 1;
-                                  setState(() {
-                                    sizeOfImportant[0] = 15;
-                                    sizeOfImportant[1] = 20;
-                                    sizeOfImportant[2] = 15;
-                                  });
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 20),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: colorsForImportance[1]),
-                                  height: sizeOfImportant[1],
-                                  width: sizeOfImportant[1],
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  newToDo.changeImportant = 2;
-                                  setState(() {
-                                    sizeOfImportant[0] = 15;
-                                    sizeOfImportant[1] = 15;
-                                    sizeOfImportant[2] = 20;
-                                  });
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 20),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: colorsForImportance[2]),
-                                  height: sizeOfImportant[2],
-                                  width: sizeOfImportant[2],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: MaterialButton(
-                          textColor: Colors.white,
-                          padding: const EdgeInsets.all(15),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              side: BorderSide(color: widget.color)),
-                          color: widget.color,
-                          onPressed: _add,
-                          child: Text('Добавить задачу'),
+                                )),
+                            Flexible(
+                                flex: 2,
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    var time = await showTimePicker(
+                                        cancelText: 'Отмена',
+                                        confirmText: 'Ок',
+                                        helpText: 'Введите время',
+                                        initialTime: TimeOfDay.now(),
+                                        context: context,
+                                        builder: (context, child) {
+                                          return Theme(
+                                              data: ThemeData.light().copyWith(
+                                                primaryColor: widget.color,
+                                                accentColor: widget.color,
+                                                colorScheme: ColorScheme.light(
+                                                    primary: widget.color),
+                                                buttonTheme: ButtonThemeData(
+                                                    textTheme: ButtonTextTheme
+                                                        .primary),
+                                              ),
+                                              child: child);
+                                        });
+                                    setState(() {
+                                      isSelectedTime = true;
+                                      DateTime d = DateTime(
+                                          selectedDate.year,
+                                          selectedDate.month,
+                                          selectedDate.day,
+                                          time.hour,
+                                          time.minute);
+                                      selectedDate = d;
+                                    });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        flex: 1,
+                                        child: Icon(Icons.access_time,
+                                            color: isSelectedTime
+                                                ? widget.color
+                                                : Colors.black),
+                                      ),
+                                      Flexible(
+                                        flex: 3,
+                                        child: Center(
+                                          child: Text(
+                                            DateFormat('HH:mm')
+                                                .format(selectedDate),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )),
+                          ],
                         ),
-                      )
-                    ],
-                  )),
-            ],
-          )),
-        ));
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    flex: 4,
+                    child: Column(
+                      children: [
+                        Align(
+                          child: Text(
+                            'Проект',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .fontSize),
+                          ),
+                          alignment: Alignment.centerLeft,
+                        ),
+                        DropdownButton(
+                            isExpanded: true,
+                            value: newToDo.toDoProj,
+                            hint: Text(
+                              'Выбрать проект',
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            items: proj.map((e) {
+                              return DropdownMenuItem(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(e.getNameProj),
+                                    Icon(
+                                      IconData(e.getIconroj,
+                                          fontFamily: 'MaterialIcons'),
+                                    ),
+                                  ],
+                                ),
+                                value: e.getIdProj,
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                newToDo.changeToDoProj = value;
+                              });
+                            }),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    flex: 4,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Align(
+                          child: Text(
+                            'Приоритет',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .fontSize),
+                          ),
+                          alignment: Alignment.centerLeft,
+                        ),
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                newToDo.changeImportant = 0;
+                                setState(() {
+                                  sizeOfImportant[0] = 20;
+                                  sizeOfImportant[1] = 15;
+                                  sizeOfImportant[2] = 15;
+                                });
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 20),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: colorsForImportance[0]),
+                                height: sizeOfImportant[0],
+                                width: sizeOfImportant[0],
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                newToDo.changeImportant = 1;
+                                setState(() {
+                                  sizeOfImportant[0] = 15;
+                                  sizeOfImportant[1] = 20;
+                                  sizeOfImportant[2] = 15;
+                                });
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 20),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: colorsForImportance[1]),
+                                height: sizeOfImportant[1],
+                                width: sizeOfImportant[1],
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                newToDo.changeImportant = 2;
+                                setState(() {
+                                  sizeOfImportant[0] = 15;
+                                  sizeOfImportant[1] = 15;
+                                  sizeOfImportant[2] = 20;
+                                });
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 20),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: colorsForImportance[2]),
+                                height: sizeOfImportant[2],
+                                width: sizeOfImportant[2],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    flex: 4,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: MaterialButton(
+                        textColor: Colors.white,
+                        padding: const EdgeInsets.all(15),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            side: BorderSide(color: widget.color)),
+                        color: widget.color,
+                        onPressed: _add,
+                        child: Text('Добавить задачу'),
+                      ),
+                    ),
+                  )
+                ],
+              )),
+        ]),
+      ),
+    );
   }
+}
+
+class WavyHeaderImage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ClipPath(
+      child: Image.asset('images/coffee_header.jpeg'),
+      clipper: BottomWaveClipper(),
+    );
+  }
+}
+
+class BottomWaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = new Path();
+    path.lineTo(0, size.height * 0.7); //vertical line
+    path.cubicTo(50, size.height, size.width - 50, size.height * 0.55,
+        size.width, size.height); //cubic curve
+    path.lineTo(size.width, 0); //vertical line
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

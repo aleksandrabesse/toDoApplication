@@ -11,8 +11,8 @@ class FancyFab extends StatefulWidget {
   BuildContext context;
   Color color;
   List<Project> proj;
-  AppBar appBar;
-  FancyFab(this.adder, this.proj, this.color, this.context, this.appBar,
+  // AppBar appBar;
+  FancyFab(this.adder, this.proj, this.color, this.context, 
       this.isNewProject);
   @override
   _FancyFabState createState() => _FancyFabState();
@@ -98,7 +98,7 @@ class _FancyFabState extends State<FancyFab>
           _animationController.reverse();
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) =>
-                  AddRoute(widget.appBar, widget.adder, widget.color)));
+                  AddRoute(widget.adder, widget.color)));
         },
         backgroundColor: _buttonColor.value,
         tooltip: 'Добавить задачу',

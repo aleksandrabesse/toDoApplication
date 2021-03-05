@@ -36,56 +36,60 @@ class _TaskState extends State<Task> {
               projectSnap.hasData == null) {
             return CircularProgressIndicator();
           } else
-            return GestureDetector(
-                onLongPress: () {
-                  setState(() {
-                    widget.delete(widget.task);
-                    DatabaseHelper.instance.delete(widget.task.toDoID, 'toDo');
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                           Icon(const IconData(59744, fontFamily: 'MaterialIcons'),
-                              color: Colors.grey),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 20,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(widget.task.toDoName),
-                                Text(
-                                  widget.task.toDoDate.day.toString() +
-                                      '.' +
-                                      widget.task.toDoDate.month.toString(),
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            widget.delete(widget.task);
+                            DatabaseHelper.instance
+                                .delete(widget.task.toDoID, 'toDo');
+                          });
+                        },
+                        child: Icon(
+                            const IconData(59744,
+                                fontFamily: 'MaterialIcons'),
+                            color: Colors.grey),
                       ),
-                      widget.task.toDoImportant == 0
-                          ? Container()
-                          : Container(
-                              margin: const EdgeInsets.only(right: 20),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: widget.task.toDoImportant == 2
-                                      ? colorsForImportance[2]
-                                      : colorsForImportance[1]),
-                              height: 10,
-                              width: 10,
-                            )
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(widget.task.toDoName),
+                            Text(
+                              widget.task.toDoDate.day.toString() +
+                                  '.' +
+                                  widget.task.toDoDate.month.toString(),
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ));
+                  widget.task.toDoImportant == 0
+                      ? Container()
+                      : Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: widget.task.toDoImportant == 2
+                                  ? colorsForImportance[2]
+                                  : colorsForImportance[1]),
+                          height: 10,
+                          width: 10,
+                        )
+                ],
+              ),
+            );
         },
         future: getKey(),
       ),
