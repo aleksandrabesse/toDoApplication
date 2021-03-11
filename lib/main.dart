@@ -2,21 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:to_do_application/classes/toDo.dart';
-import 'package:to_do_application/widgets/generateForList.dart';
+import 'package:to_do_application/helperFunc.dart';
 import 'package:to_do_application/widgets/lstOfTasks.dart';
 import 'package:to_do_application/widgets/floatingAction.dart';
 import 'package:to_do_application/widgets/newProject.dart';
-import 'dbhelper.dart';
-import 'package:flutter/material.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'classes/proj.dart';
 import 'package:to_do_application/resourses.dart';
 import 'package:to_do_application/page/listOfTasksRoute.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'features.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
   runApp(MyApp());
 }
 
@@ -34,7 +32,6 @@ class MyApp extends StatelessWidget {
             .textTheme
             .apply(fontSizeFactor: 1.0, fontSizeDelta: 2.0),
         brightness: Brightness.light,
-        // primarySwatch: Colors.blue,
         appBarTheme: AppBarTheme(
             color: Colors.transparent,
             iconTheme: IconThemeData(color: Colors.white)),
@@ -55,6 +52,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
+  Information inf = Information();
   String textForDrawer;
   final dbHelper = DatabaseHelper.instance;
   List<ToDo> tasks = [];
@@ -87,30 +85,14 @@ class _MyHomePageState extends State<MyHomePage>
       });
     });
 
-    toDoCount = tasks.length;
-    if (toDoCount == 0)
-      lstForUp = [
-        Text(
-          date(DateTime.now()) + ", " + DateTime.now().day.toString(),
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-        ),
-        Text(textForDrawer + 'Анна!'),
-        Text('У вас ни одной задачи')
-      ];
-    else
-      lstForUp = [
-        Text(
-          date(DateTime.now()) + ", " + DateTime.now().day.toString(),
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-        ),
-        Text(textForDrawer + 'Анна!'),
-        Text('У вас ' +
-            toDoCount.toString() +
-            getTask(toDoCount) +
-            ' из ' +
-            proj.length.toString() +
-            getProject(proj.length))
-      ];
+    toDoCount = inf.countOfAllTasks;
+
+    lstForUp = [
+      Text(
+        date(DateTime.now()) + ", " + DateTime.now().day.toString(),
+        style: TextStyle(fontSize: 24),
+      ),
+    ];
   }
 
   void initState() {
@@ -156,8 +138,6 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void _add(Project p) async {
-    // Project newP = Project(name, icon: icon);
-    //
     proj.add(p);
     final int id = await DatabaseHelper.instance.insertProject(p);
     p.changeIdProj = id;
@@ -182,7 +162,6 @@ class _MyHomePageState extends State<MyHomePage>
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
       floatingActionButton: FancyFab(
           (ToDo newTask) {
@@ -210,28 +189,31 @@ class _MyHomePageState extends State<MyHomePage>
                   : SizedBox(
                       child: Stack(
                         children: [
+                          // Positioned(
+                          //   top: 5 * height / 18,
+                          //   left: width * 0.05,
+                          //   child: Container(
+                          //     height: height / 8,
+                          //     width: wForCard,
+                          //     child:
+                          //         //  Padding(
+                          //         // padding: const EdgeInsets.all(8.0),
+                          //         // child:
+                          //         Column(
+                          //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       crossAxisAlignment: CrossAxisAlignment.center,
+                          //       children: lstForUp.map((e) {
+                          //         return Align(
+                          //           child: e,
+                          //           alignment: Alignment.centerLeft,
+                          //         );
+                          //       }).toList(),
+                          //     ),
+                          //   ),
+                          //   // ),
+                          // ),
                           Positioned(
-                            left: width * 0.05,
-                            child: Container(
-                              height: height * 0.2,
-                              width: wForCard,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: lstForUp.map((e) {
-                                    return Align(
-                                      child: e,
-                                      alignment: Alignment.centerLeft,
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: height * 0.2,
+                            // top: height / 8,
                             left: isDrag ? locationLeft1 : width * 0.05,
                             child: isNewProject
                                 ? Container(
@@ -260,7 +242,7 @@ class _MyHomePageState extends State<MyHomePage>
                                 : Draggable(
                                     axis: Axis.horizontal,
                                     child: Container(
-                                      height: hForCard,
+                                      height: height * 5 / 18,
                                       width: wForCard,
                                       child: GestureDetector(
                                         onTap: () {
@@ -271,27 +253,7 @@ class _MyHomePageState extends State<MyHomePage>
                                                       proj[index],
                                                       appBar,
                                                       colors[indexOfColor][0],
-                                                      tasks))
-                                              // CupertinoPageRoute(
-                                              //   builder: (context) =>
-                                              //       // ScaleRoute(page: SecondRoute());
-                                              //       SecondRoute(
-                                              //           proj[index],
-                                              //           appBar,
-                                              //           colors[indexOfColor][0],
-                                              //           tasks),
-                                              // ),
-
-                                              );
-                                          // MaterialPageRoute(
-                                          //     builder: (context) =>
-                                          //         SecondRoute(
-                                          //             proj[index],
-                                          //             appBar,
-                                          //             colors[indexOfColor]
-                                          //                 [0],
-                                          //             tasks),
-                                          //             ),
+                                                      tasks)));
                                         },
                                         child: Card(
                                           shape: RoundedRectangleBorder(
@@ -304,7 +266,7 @@ class _MyHomePageState extends State<MyHomePage>
                                       ),
                                     ),
                                     feedback: Container(
-                                      height: hForCard,
+                                      height: height * 5 / 18,
                                       width: wForCard,
                                       child: Card(
                                         shape: RoundedRectangleBorder(
@@ -333,6 +295,22 @@ class _MyHomePageState extends State<MyHomePage>
                                     },
                                   ),
                           ),
+                          Positioned(
+                            top: height/3,
+                            left: width * 0.05,
+                            height: height / 2,
+                            width: wForCard,
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Align(
+                                    child: lstForUp[0],
+                                    alignment: Alignment.centerLeft,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     )),
@@ -346,35 +324,4 @@ class _MyHomePageState extends State<MyHomePage>
       ),
     );
   }
-}
-
-class ScaleRoute extends PageRouteBuilder {
-  final Widget page;
-  ScaleRoute({this.page})
-      : super(
-          pageBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-          ) =>
-              page,
-          transitionsBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-            Widget child,
-          ) =>
-              ScaleTransition(
-            scale: Tween<double>(
-              begin: 0.0,
-              end: 1.0,
-            ).animate(
-              CurvedAnimation(
-                parent: animation,
-                curve: Curves.fastOutSlowIn,
-              ),
-            ),
-            child: child,
-          ),
-        );
 }

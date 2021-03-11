@@ -144,9 +144,9 @@ class _AddRouteState extends State<AddRoute> {
                           newToDo.changeToDoName = tx.text;
                         }
                       },
-                      // onChanged: (text) {
-                      //   newToDo.changeToDoName = tx.text;
-                      // },
+                      onChanged: (text) {
+                        newToDo.changeToDoName = tx.text;
+                      },
                       decoration: InputDecoration(
                         prefixIcon: Icon(
                           Icons.done,

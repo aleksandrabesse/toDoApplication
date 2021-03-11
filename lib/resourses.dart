@@ -108,6 +108,15 @@ const List<List<Color>> colors = [
   [const Color(0xFFED765E), const Color(0xFFE3BDE5)],
   [const Color(0xFF7DC387), const Color(0xFFDBE9EA)],
   [const Color(0xFF6CC6CB), const Color(0xFFEAE5C9)],
+
+  [const Color(0xFFff9a9e), const Color(0xFFfad0c4)],
+  [const Color(0xFFa18cd1), const Color(0xFFfbc2eb)],
+  [const Color(0xFFfad0c4), const Color(0xFFffd1ff)],
+  [const Color(0xFFffecd2), const Color(0xFFfcb69f)],
+  [const Color(0xFFfbc2eb), const Color(0xFFa6c1ee)],
+  [const Color(0xFFfdcbf1), const Color(0xFFe6dee9)],
+  [const Color(0xFFa1c4fd), const Color(0xFFc2e9fb)],
+  [const Color(0xFF4facfe), const Color(0xFF00f2fe)],
 ];
 
 const List<Color> colorsForImportance = [
