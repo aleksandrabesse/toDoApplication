@@ -25,40 +25,40 @@ String date(DateTime tm) {
   String month;
   switch (tm.month) {
     case 1:
-      month = "январь";
+      month = "января";
       break;
     case 2:
-      month = "февраль";
+      month = "февраля";
       break;
     case 3:
-      month = "март";
+      month = "марта";
       break;
     case 4:
-      month = "апрель";
+      month = "апреля";
       break;
     case 5:
-      month = "май";
+      month = "мая";
       break;
     case 6:
-      month = "июнь";
+      month = "июня";
       break;
     case 7:
-      month = "июль";
+      month = "июля";
       break;
     case 8:
-      month = "август";
+      month = "августа";
       break;
     case 9:
-      month = "сентябрь";
+      month = "сентября";
       break;
     case 10:
-      month = "октябрь";
+      month = "октября";
       break;
     case 11:
-      month = "ноябрь";
+      month = "ноября";
       break;
     case 12:
-      month = "декабрь";
+      month = "декабря";
       break;
   }
   return month;
@@ -94,11 +94,9 @@ String weekDay(DateTime tm) {
 }
 const List<List<Color>> colors = [
   [const Color(0xFFF9957F), const Color(0xFFF2F5D0)],
-  [const Color(0xFF9600FF), const Color(0xFFAEBAF8)],
   [const Color(0xFFEEBD89), const Color(0xFFD13DBD)],
   [const Color(0xFFBB73E0), const Color(0xFFFF8DDB)],
   [const Color(0xFF0CCDA3), const Color(0xFFC1FCD3)],
-  [const Color(0xFF849B5C), const Color(0xFFBFFFC7)],
   [const Color(0xFF9FA5D5), const Color(0xFFE8F5C8)],
   [
     const Color(0xFFEF96C5),

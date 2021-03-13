@@ -1,6 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:to_do_application/classes/proj.dart';
+import 'classes/proj.dart';
 
 class DatabaseHelper {
   static final _databaseName = "toDo.db";
@@ -31,7 +31,7 @@ class DatabaseHelper {
     await db
         .execute('''CREATE TABLE project (id INTEGER PRIMARY KEY AUTOINCREMENT
       ,name TEXT NOT NULL,
-            icon INTEGER NOT NULL
+            icon INTEGER NOT NULL,color INTEGER NOT NULL
        )''');
     await db.execute('''
           CREATE TABLE toDo (
@@ -43,15 +43,12 @@ class DatabaseHelper {
             FOREIGN KEY (proj) REFERENCES project(id)
           )
           ''');
-    Project insert = Project('Входящие', icon: 58771);
+
+    Project insert = Project('Входящие', icon: 58771, color: 0);
+
     await db.insert('project', insert.toMap());
   }
 
-  // Helper methods
-
-  // Inserts a row in the database where each key in the Map is a column name
-  // and the value is the column value. The return value is the id of the
-  // inserted row.
   Future<int> insertTask(task) async {
     Database db = await instance.database;
     Map<String, dynamic> t = task.toMap();
@@ -71,28 +68,23 @@ class DatabaseHelper {
   Future<int> insertProject(task) async {
     Database db = await instance.database;
     Map<String, dynamic> t = task.toMap();
-    String sqlFor = "INSERT INTO project (name,icon) VALUES ('" +
+    String sqlFor = "INSERT INTO project (name,icon,color) VALUES ('" +
         t['name'].toString() +
         "'," +
         t['icon'].toString() +
+        ',' +
+        t['color'].toString() +
         ')';
 
     return await db.rawInsert(sqlFor);
   }
-  // Future<int> insert(task, String table) async {
-  //   Database db = await instance.database;
-  //   return await db.insert(table, task.toMap());
-  // }
 
-  // All of the rows are returned as a list of maps, where each map is
-  // a key-value list of columns.
   Future<List<Map<String, dynamic>>> queryAllRows(String table) async {
     Database db = await instance.database;
     return await db.query(table);
   }
 
-  Future<List<Map<String, dynamic>>> queryRowsWithNProject(
-      String table, int n) async {
+  Future<List<Map<String, dynamic>>> queryRowsWithNProject(int n) async {
     Database db = await instance.database;
     return db.rawQuery('SELECT * FROM toDo where proj==$n');
   }
@@ -100,7 +92,6 @@ class DatabaseHelper {
   // Queries rows based on the argument received
   Future<List<Map<String, dynamic>>> queryRows(name, table) async {
     Database db = await instance.database;
-
     return await db.query(table, where: "name LIKE '%$name%'");
   }
 
@@ -112,10 +103,10 @@ class DatabaseHelper {
         await db.rawQuery('SELECT COUNT(*) FROM $table'));
   }
 
-  Future<int> queryRowProjCount(String table, int proj) async {
+  Future<int> queryRowProjCount(int proj) async {
     Database db = await instance.database;
-    return Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT(*) FROM $table where proj = $proj'));
+    return Sqflite.firstIntValue(await db
+        .rawQuery('SELECT COUNT(*) FROM toDo where proj ==' + proj.toString()));
   }
 
   Future<List<Map<String, dynamic>>> getForeignKey(int id) async {

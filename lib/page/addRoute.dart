@@ -119,16 +119,16 @@ class _AddRouteState extends State<AddRoute> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Text(
-                        'Добавить задачу',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      )),
+                  // Padding(
+                  //     padding: const EdgeInsets.only(bottom: 20),
+                  //     child: Text(
+                  //       'Добавить задачу',
+                  //       style: TextStyle(
+                  //         fontWeight: FontWeight.w600,
+                  //         color: Colors.white,
+                  //         fontSize: 20,
+                  //       ),
+                  //     )),
                   Align(
                     alignment: Alignment(-1, -1),
                     child: TextField(

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:to_do_application/classes/toDo.dart';
-import 'package:to_do_application/helperFunc.dart';
 import 'package:to_do_application/widgets/lstOfTasks.dart';
 import 'package:to_do_application/widgets/floatingAction.dart';
 import 'package:to_do_application/widgets/newProject.dart';
@@ -52,65 +51,47 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  Information inf = Information();
   String textForDrawer;
   final dbHelper = DatabaseHelper.instance;
-  List<ToDo> tasks = [];
   List<Project> proj = [];
+  Map commonList = {};
   bool isNewProject = false;
   bool isLoading = true;
-  int toDoCount;
   List<Text> lstForUp;
   int index = 0;
   int indexOfColor = 0; //index for colors
   void getFuture() async {
-    await DatabaseHelper.instance
+    await dbHelper
         .queryAllRows('project')
         .then((value) => value.forEach((element) {
-              print(element['name']);
-              setState(() {
-                proj.add(Project.fromMap(element));
-              });
-            }));
-    await dbHelper
-        .queryAllRows('toDo')
-        .then((value) => value.forEach((element) {
-              setState(() {
-                tasks.insert(0, ToDo.fromMap(element));
-              });
+              // print(element['Name']);
+              proj.add(Project.fromMap(element));
             }))
-        .whenComplete(() {
+        .whenComplete(() async {
+      for (int i = 0; i < proj.length; i++) {
+        await dbHelper.queryRowProjCount(proj[i].getIdProj).then((value) {
+          commonList[proj[i].getIdProj] = value;
+        });
+      }
+    }).whenComplete(() {
+      print(commonList);
       setState(() {
         isLoading = false;
       });
     });
 
-    toDoCount = inf.countOfAllTasks;
-
     lstForUp = [
       Text(
-        date(DateTime.now()) + ", " + DateTime.now().day.toString(),
-        style: TextStyle(fontSize: 24),
+        'Сегодня ' + DateTime.now().day.toString() + " " + date(DateTime.now()),
+        // style: TextStyle(fontSize: 24),
       ),
     ];
   }
 
   void initState() {
-    textForDrawer = DateTime.now().hour >= 18 || DateTime.now().hour <= 5
-        ? 'Добрый вечер, '
-        : DateTime.now().hour > 12
-            ? 'Добрый день, '
-            : 'Доброе утро, ';
     getFuture();
+    indexOfColor = 0;
     super.initState();
-  }
-
-  void changeIndexForColorLeft() {
-    int n = colors.length;
-    if (indexOfColor + 1 == n)
-      indexOfColor = 0;
-    else
-      indexOfColor += 1;
   }
 
   void changeIndexForProjectLeft() {
@@ -119,14 +100,7 @@ class _MyHomePageState extends State<MyHomePage>
       index = 0;
     else
       index += 1;
-  }
-
-  void changeIndexForColorRight() {
-    int n = colors.length;
-    if (indexOfColor - 1 == -1)
-      indexOfColor = n - 1;
-    else
-      indexOfColor -= 1;
+    indexOfColor = proj[index].getColorproj;
   }
 
   void changeIndexForProjectRight() {
@@ -135,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage>
       index = n - 1;
     else
       index -= 1;
+    indexOfColor = proj[index].getColorproj;
   }
 
   void _add(Project p) async {
@@ -155,7 +130,6 @@ class _MyHomePageState extends State<MyHomePage>
 
     double height =
         (MediaQuery.of(context).size.height - appBar.preferredSize.height);
-    double hForCard = height * 0.6;
     double width = MediaQuery.of(context).size.width;
     double wForCard = MediaQuery.of(context).size.width * 0.9;
     double locationLeft1 = 150;
@@ -166,16 +140,16 @@ class _MyHomePageState extends State<MyHomePage>
       floatingActionButton: FancyFab(
           (ToDo newTask) {
             setState(() {
-              tasks.insert(0, newTask);
-              toDoCount += 1;
+              // tasks.insert(0, newTask);
+              // toDoCount += 1;
             });
           },
           proj,
-          colors[indexOfColor][0],
+          colors[indexOfColor],
           context,
-          () {
+          (Project p) {
             setState(() {
-              isNewProject = true;
+              _add(p);
             });
           }),
       appBar: appBar,
@@ -189,114 +163,66 @@ class _MyHomePageState extends State<MyHomePage>
                   : SizedBox(
                       child: Stack(
                         children: [
-                          // Positioned(
-                          //   top: 5 * height / 18,
-                          //   left: width * 0.05,
-                          //   child: Container(
-                          //     height: height / 8,
-                          //     width: wForCard,
-                          //     child:
-                          //         //  Padding(
-                          //         // padding: const EdgeInsets.all(8.0),
-                          //         // child:
-                          //         Column(
-                          //       mainAxisAlignment: MainAxisAlignment.center,
-                          //       crossAxisAlignment: CrossAxisAlignment.center,
-                          //       children: lstForUp.map((e) {
-                          //         return Align(
-                          //           child: e,
-                          //           alignment: Alignment.centerLeft,
-                          //         );
-                          //       }).toList(),
-                          //     ),
-                          //   ),
-                          //   // ),
-                          // ),
                           Positioned(
-                            // top: height / 8,
                             left: isDrag ? locationLeft1 : width * 0.05,
-                            child: isNewProject
-                                ? Container(
-                                    height: hForCard,
-                                    width: wForCard,
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                      ),
-                                      child: NewProjCard(
+                            child: Draggable(
+                              axis: Axis.horizontal,
+                              child: Container(
+                                height: height * 5 / 18,
+                                width: wForCard,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        ScaleRoute(
+                                            page: SecondRoute(
+                                          proj[index],
+                                          appBar,
                                           colors[indexOfColor][0],
-                                          (Project temp) {
-                                            setState(() {
-                                              _add(temp);
-                                            });
-                                          },
-                                          hForCard,
-                                          () {
-                                            setState(() {
-                                              isNewProject = false;
-                                            });
-                                          }),
+                                        )));
+                                  },
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
                                     ),
-                                  )
-                                : Draggable(
-                                    axis: Axis.horizontal,
-                                    child: Container(
-                                      height: height * 5 / 18,
-                                      width: wForCard,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              ScaleRoute(
-                                                  page: SecondRoute(
-                                                      proj[index],
-                                                      appBar,
-                                                      colors[indexOfColor][0],
-                                                      tasks)));
-                                        },
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0),
-                                          ),
-                                          child: ListOfTasks(proj[index],
-                                              colors[indexOfColor][0]),
-                                        ),
-                                      ),
-                                    ),
-                                    feedback: Container(
-                                      height: height * 5 / 18,
-                                      width: wForCard,
-                                      child: Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15.0),
-                                        ),
-                                        child: ListOfTasks(proj[index],
-                                            colors[indexOfColor][0]),
-                                      ),
-                                    ),
-                                    childWhenDragging: Container(),
-                                    onDragEnd: (drag) {
-                                      double change = drag.offset.dx;
-                                      if (change > wForCard / 2) {
-                                        setState(() {
-                                          changeIndexForColorRight();
-                                          changeIndexForProjectRight();
-                                        });
-                                      }
-                                      if (change < -wForCard / 2) {
-                                        setState(() {
-                                          changeIndexForColorLeft();
-                                          changeIndexForProjectLeft();
-                                        });
-                                      }
-                                    },
+                                    child: ListOfTasks(
+                                        proj[index],
+                                        colors[indexOfColor][0],
+                                        commonList[proj[index].getIdProj]),
                                   ),
+                                ),
+                              ),
+                              feedback: Container(
+                                height: height * 5 / 18,
+                                width: wForCard,
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: ListOfTasks(
+                                      proj[index],
+                                      colors[indexOfColor][0],
+                                      commonList[proj[index].getIdProj]),
+                                ),
+                              ),
+                              childWhenDragging: Container(),
+                              onDragEnd: (drag) {
+                                double change = drag.offset.dx;
+                                if (change > wForCard / 2) {
+                                  setState(() {
+                                    changeIndexForProjectRight();
+                                  });
+                                }
+                                if (change < -wForCard / 2) {
+                                  setState(() {
+                                    changeIndexForProjectLeft();
+                                  });
+                                }
+                              },
+                            ),
                           ),
                           Positioned(
-                            top: height/3,
+                            top: height / 3,
                             left: width * 0.05,
                             height: height / 2,
                             width: wForCard,

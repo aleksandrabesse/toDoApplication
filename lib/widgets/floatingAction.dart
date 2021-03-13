@@ -3,17 +3,15 @@ import 'package:to_do_application/page/addRoute.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/dbhelper.dart';
-
+import 'package:to_do_application/page/newProjectPage.dart';
 
 class FancyFab extends StatefulWidget {
   final Function(ToDo) adder;
-  final Function() isNewProject;
+  final Function(Project) adderProject;
   BuildContext context;
-  Color color;
+  List<Color> color;
   List<Project> proj;
-  // AppBar appBar;
-  FancyFab(this.adder, this.proj, this.color, this.context, 
-      this.isNewProject);
+  FancyFab(this.adder, this.proj, this.color, this.context, this.adderProject);
   @override
   _FancyFabState createState() => _FancyFabState();
 }
@@ -31,15 +29,15 @@ class _FancyFabState extends State<FancyFab>
   @override
   initState() {
     _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+        AnimationController(vsync: this, duration: Duration(milliseconds: 250))
           ..addListener(() {
             setState(() {});
           });
     _animateIcon =
         Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _buttonColor = ColorTween(
-      begin: widget.color,
-      end: widget.color,
+      begin: widget.color[0],
+      end: widget.color[0],
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Interval(
@@ -77,12 +75,10 @@ class _FancyFabState extends State<FancyFab>
     isOpened = !isOpened;
   }
 
-
-
   Widget addNewTask() {
     _buttonColor = ColorTween(
-      begin: widget.color,
-      end: widget.color,
+      begin: widget.color[0],
+      end: widget.color[1],
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Interval(
@@ -97,8 +93,7 @@ class _FancyFabState extends State<FancyFab>
         onPressed: () {
           _animationController.reverse();
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) =>
-                  AddRoute(widget.adder, widget.color)));
+              builder: (context) => AddRoute(widget.adder, widget.color[0])));
         },
         backgroundColor: _buttonColor.value,
         tooltip: 'Добавить задачу',
@@ -113,11 +108,11 @@ class _FancyFabState extends State<FancyFab>
         heroTag: 'btn1',
         onPressed: () {
           _animationController.reverse();
-          //   Navigator.of(context).push(MaterialPageRoute(
-          //       builder: (context) =>
-          //           NewProjRoute(widget.appBar, widget.color, _add)));
-          //
-          widget.isNewProject();
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) =>
+                  NewProjectPage(widget.color, widget.adderProject)));
+
+          // widget.isNewProject();
         },
         backgroundColor: _buttonColor.value,
         tooltip: 'Добавить проект',
