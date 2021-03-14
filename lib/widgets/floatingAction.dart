@@ -78,7 +78,7 @@ class _FancyFabState extends State<FancyFab>
   Widget addNewTask() {
     _buttonColor = ColorTween(
       begin: widget.color[0],
-      end: widget.color[1],
+      end: widget.color[0],
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Interval(

@@ -128,6 +128,10 @@ class _MyHomePageState extends State<MyHomePage>
       textTheme: Theme.of(context).textTheme,
       elevation: 0.0,
     );
+    // void _add(newToDo) async {
+    //   final int id = await DatabaseHelper.instance.insertTask(newToDo);
+    //   newToDo.changeToDoID = id;
+    // }
 
     double height =
         (MediaQuery.of(context).size.height - appBar.preferredSize.height);
@@ -139,11 +143,12 @@ class _MyHomePageState extends State<MyHomePage>
       resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       floatingActionButton: FancyFab(
-          (ToDo newTask) {
+          (ToDo newTask) async {
             setState(() {
-              // tasks.insert(0, newTask);
-              // toDoCount += 1;
+              commonList[newTask.toDoProj] += 1;
             });
+            final int id = await DatabaseHelper.instance.insertTask(newTask);
+            newTask.changeToDoID = id;
           },
           proj,
           colors[indexOfColor],

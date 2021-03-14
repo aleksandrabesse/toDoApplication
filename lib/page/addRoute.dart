@@ -9,7 +9,7 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 
 class AddRoute extends StatefulWidget {
-  final Function _adder;
+  final Function(ToDo) _adder;
   Color color;
   AddRoute(this._adder, this.color);
 
@@ -39,15 +39,6 @@ class _AddRouteState extends State<AddRoute> {
   void dispose() {
     tx.dispose();
     super.dispose();
-  }
-
-  void _add() async {
-    newToDo.changeToDoDate = DateTime(selectedDate.year, selectedDate.month,
-        selectedDate.day, selectedTime.hour, selectedTime.minute);
-    final int id = await DatabaseHelper.instance.insertTask(newToDo);
-    newToDo.changeToDoID = id;
-    widget._adder(newToDo);
-    Navigator.of(context).pop();
   }
 
   bool isSelectedDate = false;
@@ -105,8 +96,6 @@ class _AddRouteState extends State<AddRoute> {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // resizeToAvoidBottomInset: false,
-      // resizeToAvoidBottomPadding: false,
       extendBodyBehindAppBar: true,
       appBar: appBar,
       body: SafeArea(
@@ -119,22 +108,11 @@ class _AddRouteState extends State<AddRoute> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  // Padding(
-                  //     padding: const EdgeInsets.only(bottom: 20),
-                  //     child: Text(
-                  //       'Добавить задачу',
-                  //       style: TextStyle(
-                  //         fontWeight: FontWeight.w600,
-                  //         color: Colors.white,
-                  //         fontSize: 20,
-                  //       ),
-                  //     )),
                   Align(
                     alignment: Alignment(-1, -1),
                     child: TextField(
                       textCapitalization: TextCapitalization.sentences,
                       maxLines: 1,
-
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.w500),
                       autofocus: false,
@@ -251,7 +229,7 @@ class _AddRouteState extends State<AddRoute> {
                                 child: GestureDetector(
                                   onTap: () async {
                                     var time = await showTimePicker(
-                                    
+
                                         // locale: Locale('ru', "RU"),
                                         cancelText: 'Отмена',
                                         confirmText: 'Ок',
@@ -445,7 +423,16 @@ class _AddRouteState extends State<AddRoute> {
                             borderRadius: BorderRadius.circular(15.0),
                             side: BorderSide(color: widget.color)),
                         color: widget.color,
-                        onPressed: _add,
+                        onPressed: () {
+                          newToDo.changeToDoDate = DateTime(
+                              selectedDate.year,
+                              selectedDate.month,
+                              selectedDate.day,
+                              selectedTime.hour,
+                              selectedTime.minute);
+                          Navigator.of(context).pop();
+                          widget._adder(newToDo);
+                        },
                         child: Text('Добавить задачу'),
                       ),
                     ),
