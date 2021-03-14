@@ -113,9 +113,10 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void _add(Project p) async {
-    proj.add(p);
     final int id = await DatabaseHelper.instance.insertProject(p);
     p.changeIdProj = id;
+    proj.add(p);
+    commonList[p.getIdProj] = 0;
   }
 
   bool isDrag = false;
@@ -176,9 +177,9 @@ class _MyHomePageState extends State<MyHomePage>
                                         context,
                                         ScaleRoute(
                                             page: SecondRoute(
-                                          proj[index],
-                                          colors[indexOfColor][0],
-                                        )));
+                                                proj[index],
+                                                colors[indexOfColor][0],
+                                                width)));
                                   },
                                   child: Card(
                                     shape: RoundedRectangleBorder(
