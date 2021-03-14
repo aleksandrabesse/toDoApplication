@@ -3,6 +3,7 @@ import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/resourses.dart';
+import 'package:intl/intl.dart';
 
 class SecondRoute extends StatefulWidget {
   Color color;
@@ -20,6 +21,7 @@ class _SecondRouteState extends State<SecondRoute> {
   int count;
   String text = '';
   bool isLoading = true;
+
   void getFuture() async {
     await DatabaseHelper.instance
         .queryRowProjCount(widget.current.getIdProj)
@@ -136,10 +138,12 @@ class _SecondRouteState extends State<SecondRoute> {
                             child: Icon(Icons.done),
                           ),
                           title: Text(el.toDoName),
-                          subtitle: Text(el.toDoDate.toLocal().toString()),
+                          subtitle:
+                              Text(DateFormat("HH:mm").format(el.toDoDate)),
                           trailing: el.toDoImportant >= 1
                               ? Icon(Icons.circle,
-                                  color: colorsForImportance[el.toDoImportant])
+                                  color: colorsForImportance[el.toDoImportant],
+                                  size: 12)
                               : Container(),
                         ))
                     .toList(),
