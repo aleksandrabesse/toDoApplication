@@ -36,6 +36,7 @@ class _NewProjectPageState extends State<NewProjectPage> {
         onPressed: () {
           Project p = Project(nameOfProject, icon: icon, color: colorIndex);
           widget.adderProject(p);
+          Navigator.of(context).pop();
         },
         backgroundColor: colors[colorIndex][firstOrSecondColor],
       ),

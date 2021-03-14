@@ -177,7 +177,6 @@ class _MyHomePageState extends State<MyHomePage>
                                         ScaleRoute(
                                             page: SecondRoute(
                                           proj[index],
-                                          appBar,
                                           colors[indexOfColor][0],
                                         )));
                                   },
