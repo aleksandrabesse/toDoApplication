@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
-import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:to_do_application/classes/proj.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'package:to_do_application/resourses.dart';
-import 'dart:math';
+
 import 'package:intl/intl.dart';
 
 class AddRoute extends StatefulWidget {

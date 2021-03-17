@@ -74,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage>
         });
       }
     }).whenComplete(() {
+      print('Общий лист');
       print(commonList);
       setState(() {
         isLoading = false;
@@ -179,12 +180,18 @@ class _MyHomePageState extends State<MyHomePage>
                                 child: GestureDetector(
                                   onTap: () {
                                     Navigator.push(
-                                        context,
-                                        ScaleRoute(
-                                            page: SecondRoute(
-                                                proj[index],
-                                                colors[indexOfColor][0],
-                                                width)));
+                                      context,
+                                      ScaleRoute(
+                                          page: SecondRoute(
+                                              proj[index],
+                                              colors[indexOfColor][0],
+                                              width, (ToDo p) {
+                                        setState(() {
+                                          commonList[p.toDoProj] -= 1;
+                                        });
+                                        dbHelper.delete(p.toDoID, 'toDo');
+                                      })),
+                                    );
                                   },
                                   child: Card(
                                     shape: RoundedRectangleBorder(

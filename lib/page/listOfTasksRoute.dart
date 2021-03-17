@@ -10,7 +10,8 @@ class SecondRoute extends StatefulWidget {
   List<ToDo> tasks = [];
   Project current;
   double width;
-  SecondRoute(this.current, this.color, this.width);
+  final Function(ToDo) del;
+  SecondRoute(this.current, this.color, this.width, this.del);
 
   @override
   _SecondRouteState createState() => _SecondRouteState();
@@ -40,350 +41,9 @@ class _SecondRouteState extends State<SecondRoute> {
         });
       }).whenComplete(() {
         needed = widget.tasks;
-
-        List<Widget> td = [];
-        List<Widget> tm = [];
-        List<Widget> tw = [];
-        List<Widget> thisMonth = [];
-        List<Widget> lt = [];
         needed.sort((a, b) => a.toDoDate.compareTo(b.toDoDate));
-
-        var today = DateTime.now();
-        var tommoroow = DateTime.now().add(Duration(days: 1));
-        var maxThisWeek = DateTime.now();
-
-        while (maxThisWeek.weekday != DateTime.sunday) {
-          maxThisWeek.add(const Duration(days: 1));
-        }
-
-        for (int i = 0; i < needed.length; i++) {
-          var temp = needed[i].toDoDate;
-          var n = needed[i];
-          if (temp.year == today.year) {
-            if (temp.day == today.day && temp.month == today.month) {
-              td.add(
-                Padding(
-                  padding: const EdgeInsets.only(top: 15),
-                  child: Container(
-                    width: widget.width * 0.9,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                print('Хочу выйти, а не дают');
-                              },
-                              child: Icon(Icons.done),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(n.toDoName,
-                                      style: TextStyle(fontSize: 18)),
-                                  Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: Text(
-                                        DateFormat('HH:mm').format(n.toDoDate),
-                                        style: TextStyle(color: Colors.grey),
-                                        textAlign: TextAlign.left,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        n.toDoImportant >= 1
-                            ? Icon(Icons.circle,
-                                color: colorsForImportance[n.toDoImportant],
-                                size: 12)
-                            : Container()
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            } else if (temp.day == tommoroow.day &&
-                temp.month == tommoroow.month) {
-              tm.add(Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: Container(
-                    width: widget.width * 0.9,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                print('Хочу выйти, а не дают');
-                              },
-                              child: Icon(Icons.done),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(n.toDoName,
-                                      style: TextStyle(fontSize: 18)),
-                                  Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: Text(
-                                        DateFormat('HH:mm').format(n.toDoDate),
-                                        style: TextStyle(color: Colors.grey),
-                                        textAlign: TextAlign.left,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        n.toDoImportant >= 1
-                            ? Icon(Icons.circle,
-                                color: colorsForImportance[n.toDoImportant],
-                                size: 12)
-                            : Container()
-                      ],
-                    )),
-              ));
-            } else if (temp.isAfter(tommoroow) && temp.isBefore(maxThisWeek) ||
-                (temp.day == maxThisWeek.day &&
-                    temp.month == maxThisWeek.month &&
-                    temp.year == maxThisWeek.year)) {
-              tw.add(Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: Container(
-                    width: widget.width * 0.9,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                print('Хочу выйти, а не дают');
-                              },
-                              child: Icon(Icons.done),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(n.toDoName,
-                                      style: TextStyle(fontSize: 18)),
-                                  Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: Text(
-                                        weekDay(n.toDoDate) +
-                                            ', ' +
-                                            DateFormat('dd.MM')
-                                                .format(n.toDoDate),
-                                        style: TextStyle(color: Colors.grey),
-                                        textAlign: TextAlign.left,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        n.toDoImportant >= 1
-                            ? Icon(Icons.circle,
-                                color: colorsForImportance[n.toDoImportant],
-                                size: 12)
-                            : Container()
-                      ],
-                    )),
-              ));
-            } else {
-              thisMonth.add(Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: Container(
-                    width: widget.width * 0.9,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                print('Хочу выйти, а не дают');
-                              },
-                              child: Icon(Icons.done),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(n.toDoName,
-                                      style: TextStyle(fontSize: 18)),
-                                  Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: Text(
-                                        DateFormat('dd.MM').format(n.toDoDate),
-                                        style: TextStyle(color: Colors.grey),
-                                        textAlign: TextAlign.left,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        n.toDoImportant >= 1
-                            ? Icon(Icons.circle,
-                                color: colorsForImportance[n.toDoImportant],
-                                size: 12)
-                            : Container()
-                      ],
-                    )),
-              ));
-            }
-          } else {
-            lt.add(Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: Container(
-                  width: widget.width * 0.9,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              print('Хочу выйти, а не дают');
-                            },
-                            child: Icon(Icons.done),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(n.toDoName,
-                                    style: TextStyle(fontSize: 18)),
-                                Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      DateFormat('yyyy').format(n.toDoDate),
-                                      style: TextStyle(color: Colors.grey),
-                                      textAlign: TextAlign.left,
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      n.toDoImportant >= 1
-                          ? Icon(Icons.circle,
-                              color: colorsForImportance[n.toDoImportant],
-                              size: 12)
-                          : Container()
-                    ],
-                  )),
-            ));
-          }
-        }
-
-        needToShow.add(Padding(
-          padding: const EdgeInsets.only(left: 20, top: 15),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Сегодня',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: widget.color,
-                  fontSize: 18),
-            ),
-          ),
-        ));
-        needToShow.add(Divider(
-          color: widget.color,
-          thickness: 1,
-        ));
-        needToShow.addAll(td);
-        needToShow.add(Padding(
-          padding: const EdgeInsets.only(left: 20, top: 15),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Завтра',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: widget.color,
-                  fontSize: 18),
-            ),
-          ),
-        ));
-        needToShow.add(Divider(
-          color: widget.color,
-          thickness: 1,
-        ));
-        needToShow.addAll(tm);
-        needToShow.add(Padding(
-          padding: const EdgeInsets.only(left: 20, top: 15),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'На этой неделе',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: widget.color,
-                  fontSize: 18),
-            ),
-          ),
-        ));
-        needToShow.add(Divider(
-          color: widget.color,
-          thickness: 1,
-        ));
-        needToShow.addAll(tw);
-        needToShow.add(Padding(
-          padding: const EdgeInsets.only(left: 20, top: 15),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'В этом месяце',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: widget.color,
-                  fontSize: 18),
-            ),
-          ),
-        ));
-        needToShow.add(Divider(
-          color: widget.color,
-          thickness: 1,
-        ));
-        needToShow.addAll(thisMonth);
-        needToShow.add(Padding(
-          padding: const EdgeInsets.only(left: 20, top: 15),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Позднее',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: widget.color,
-                  fontSize: 18),
-            ),
-          ),
-        ));
-        needToShow.add(Divider(
-          color: widget.color,
-          thickness: 1,
-        ));
-        needToShow.addAll(lt);
+        print(needed);
+        items = List.from(needed);
         setState(() {
           isLoading = false;
         });
@@ -391,6 +51,7 @@ class _SecondRouteState extends State<SecondRoute> {
     });
   }
 
+  List<ToDo> items;
   initState() {
     getFuture();
 
@@ -439,104 +100,184 @@ class _SecondRouteState extends State<SecondRoute> {
         ),
       ),
       appBar: appBar,
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height:
-            MediaQuery.of(context).size.height + appBar.preferredSize.height,
-        child: SafeArea(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: (MediaQuery.of(context).size.height -
-                          appBar.preferredSize.height) *
-                      0.13,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(
-                              left: 20, top: 20, bottom: 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Align(
-                                child: Text(text),
-                                alignment: Alignment.centerLeft,
-                              ),
-                              Align(
-                                child: Text(
-                                  widget.current.getNameProj,
-                                  style: TextStyle(
+      body: isLoading
+          ? CircularProgressIndicator()
+          : SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height +
+                  appBar.preferredSize.height,
+              child: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(
+                                left: 20, top: 20, bottom: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Align(
+                                  child: Text(text),
+                                  alignment: Alignment.centerLeft,
+                                ),
+                                Align(
+                                  child: Text(
+                                    widget.current.getNameProj,
+                                    style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 24,
-                                      ),
+                                    ),
+                                  ),
+                                  alignment: Alignment.centerLeft,
                                 ),
-                                alignment: Alignment.centerLeft,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  height: (MediaQuery.of(context).size.height -
-                          appBar.preferredSize.height) *
-                      0.8,
-                  child: SingleChildScrollView(
-                    child: Column(children: needToShow),
-                  ),
-                )
-              ]),
-        ),
-      ),
-    );
-  }
-}
-
-class LT extends StatelessWidget {
-  ToDo n;
-  LT(this.n);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: 400,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    print('Хочу выйти, а не дают');
-                  },
-                  child: Icon(Icons.done),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Column(
-                    children: [
-                      Text(n.toDoName),
-                      Text(
-                        DateFormat('HH:mm').format(n.toDoDate),
-                        textAlign: TextAlign.left,
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appBar.preferredSize.height) *
+                          0.5,
+                      // width: MediaQuery.of(context).size.width * 0.9,
+                      child: ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final n = items[index];
+                          final item = items[index].toDoName;
+                          return Dismissible(
+                            secondaryBackground: Container(
+                              color: colorsForImportance[0],
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Icon(Icons.delete, color: Colors.white),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text('Сделано',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            background: Container(
+                              color: colorsForImportance[0],
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.delete, color: Colors.white),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text('Сделано',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            key: UniqueKey(),
+                            onDismissed: (direction) {
+                              widget.del(n);
+                              setState(() {
+                                items.removeAt(index);
+                                count -= 1;
+                              });
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("Задача '$item' удалена")));
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 15, left: 20),
+                              child: Container(
+                                // width: widget.width * 0.9,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            widget.del(n);
+                                            setState(() {
+                                              count -= 1;
+                                              items.removeAt(index);
+                                            });
+
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content: Text(
+                                                        "Задача '$item' удалена")));
+                                          },
+                                          child: Icon(Icons.done),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 15),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(n.toDoName,
+                                                  style:
+                                                      TextStyle(fontSize: 18)),
+                                              Align(
+                                                  alignment:
+                                                      Alignment.bottomLeft,
+                                                  child: Text(
+                                                    DateFormat('HH:mm').format(
+                                                            n.toDoDate) +
+                                                        ', ' +
+                                                        weekDay(n.toDoDate) +
+                                                        ' ' +
+                                                        DateFormat('dd.MM')
+                                                            .format(n.toDoDate),
+                                                    style: TextStyle(
+                                                        color: Colors.grey),
+                                                    textAlign: TextAlign.left,
+                                                  )),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    n.toDoImportant >= 1
+                                        ? Icon(Icons.circle,
+                                            color: colorsForImportance[
+                                                n.toDoImportant],
+                                            size: 12)
+                                        : Container()
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-            n.toDoImportant >= 1
-                ? Icon(Icons.circle,
-                    color: colorsForImportance[n.toDoImportant], size: 12)
-                : Container()
-          ],
-        ));
+    );
   }
 }

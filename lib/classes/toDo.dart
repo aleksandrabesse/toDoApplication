@@ -27,11 +27,11 @@ class ToDo {
     return _project;
   }
 
-  void set changeToDoProj(int n) {
+ set changeToDoProj(int n) {
     if (n > 0 && n != _project) _project = n;
   }
 
-  void set changeToDoID(int n) {
+  set changeToDoID(int n) {
     _id = n;
   }
 
@@ -43,7 +43,7 @@ class ToDo {
     return _id;
   }
 
-  void set changeToDoDate(DateTime n) {
+ set changeToDoDate(DateTime n) {
     if (n != _deadline) _deadline = n;
   }
 
@@ -51,7 +51,7 @@ class ToDo {
     return _name;
   }
 
-  void set changeToDoName(String n) {
+  set changeToDoName(String n) {
     if (n != '' && n != ' ') _name = n;
   }
 
@@ -59,7 +59,7 @@ class ToDo {
     return _important;
   }
 
-  void set changeImportant(int n) {
+ set changeImportant(int n) {
     if (_important != n) if (_important >= 0 && _important <= 3) _important = n;
   }
 

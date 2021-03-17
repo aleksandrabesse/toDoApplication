@@ -9,9 +9,9 @@ class MultiSelectChip extends StatefulWidget {
 }
 
 class _MultiSelectChipState extends State<MultiSelectChip> {
-  List<bool> selectedChoices = List();
+  List<bool> selectedChoices =[];
   int chooise = 58712;
-  List<int> icons = List();
+  List<int> icons = [];
   void initState() {
     for (int i = 58712; i <= 60158; i += 3) {
       icons.add(i);
@@ -22,7 +22,7 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
   }
 
   _buildChoiceList() {
-    List<Widget> choices = List();
+    List<Widget> choices = [];
     icons.forEach((item) {
       choices.add(
         Container(

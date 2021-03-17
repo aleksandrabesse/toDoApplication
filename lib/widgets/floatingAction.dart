@@ -8,10 +8,12 @@ import 'package:to_do_application/page/newProjectPage.dart';
 class FancyFab extends StatefulWidget {
   final Function(ToDo) adder;
   final Function(Project) adderProject;
+
   BuildContext context;
   List<Color> color;
   List<Project> proj;
-  FancyFab(this.adder, this.proj, this.color, this.context, this.adderProject);
+  FancyFab(this.adder, this.proj, this.color, this.context, this.adderProject
+     );
   @override
   _FancyFabState createState() => _FancyFabState();
 }
