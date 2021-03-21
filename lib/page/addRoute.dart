@@ -428,8 +428,8 @@ class _AddRouteState extends State<AddRoute> {
                               selectedDate.day,
                               selectedTime.hour,
                               selectedTime.minute);
-                          Navigator.of(context).pop();
                           widget._adder(newToDo);
+                          Navigator.of(context).pop();
                         },
                         child: Text('Добавить задачу'),
                       ),

@@ -1,16 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:to_do_application/allProjPage.dart';
 import 'package:to_do_application/classes/toDo.dart';
 import 'package:to_do_application/widgets/lstOfTasks.dart';
 import 'package:to_do_application/widgets/floatingAction.dart';
-import 'package:to_do_application/widgets/newProject.dart';
+import 'package:intl/intl.dart';
 import 'package:to_do_application/dbhelper.dart';
 import 'classes/proj.dart';
 import 'package:to_do_application/resourses.dart';
 import 'package:to_do_application/page/listOfTasksRoute.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'features.dart';
+import 'dart:ui' as ui;
+import 'package:flutter/painting.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -51,76 +54,31 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  String textForDrawer;
-  final dbHelper = DatabaseHelper.instance;
-  List<Project> proj = [];
-  Map commonList = {};
-  bool isNewProject = false;
+  List<ToDo> needed = [];
   bool isLoading = true;
-  List<Text> lstForUp;
-  int index = 0;
-  int indexOfColor = 0; //index for colors
   void getFuture() async {
-    await dbHelper
-        .queryAllRows('project')
-        .then((value) => value.forEach((element) {
-              // print(element['Name']);
-              proj.add(Project.fromMap(element));
-            }))
-        .whenComplete(() async {
-      for (int i = 0; i < proj.length; i++) {
-        await dbHelper.queryRowProjCount(proj[i].getIdProj).then((value) {
-          commonList[proj[i].getIdProj] = value;
-        });
-      }
+    needed.clear();
+    await DatabaseHelper.instance.queryAllRows('toDo').then((value) {
+      print(value);
+      value.forEach((element) {
+        needed.add(ToDo.fromMap(element));
+      });
     }).whenComplete(() {
-      print('Общий лист');
-      print(commonList);
+      needed.sort((a, b) => a.toDoDate.compareTo(b.toDoDate));
+      print(needed);
+      items = List.from(needed);
       setState(() {
         isLoading = false;
       });
     });
-
-    lstForUp = [
-      Text(
-        'Сегодня ' + DateTime.now().day.toString() + " " + date(DateTime.now()),
-        // style: TextStyle(fontSize: 24),
-      ),
-    ];
   }
 
-  void initState() {
+  List<ToDo> items;
+  initState() {
     getFuture();
-    indexOfColor = 0;
     super.initState();
   }
 
-  void changeIndexForProjectLeft() {
-    int n = proj.length;
-    if (index + 1 == n)
-      index = 0;
-    else
-      index += 1;
-    indexOfColor = proj[index].getColorproj;
-  }
-
-  void changeIndexForProjectRight() {
-    int n = proj.length;
-    if (index - 1 == -1)
-      index = n - 1;
-    else
-      index -= 1;
-    indexOfColor = proj[index].getColorproj;
-  }
-
-  void _add(Project p) async {
-    final int id = await DatabaseHelper.instance.insertProject(p);
-    p.changeIdProj = id;
-    proj.add(p);
-    commonList[p.getIdProj] = 0;
-  }
-
-  bool isDrag = false;
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
@@ -128,138 +86,155 @@ class _MyHomePageState extends State<MyHomePage>
       iconTheme: Theme.of(context).iconTheme,
       textTheme: Theme.of(context).textTheme,
       elevation: 0.0,
+      title: Text('Задачи'),
+      centerTitle: true,
     );
-    // void _add(newToDo) async {
-    //   final int id = await DatabaseHelper.instance.insertTask(newToDo);
-    //   newToDo.changeToDoID = id;
-    // }
-
-    double height =
-        (MediaQuery.of(context).size.height - appBar.preferredSize.height);
-    double width = MediaQuery.of(context).size.width;
-    double wForCard = MediaQuery.of(context).size.width * 0.9;
-    double locationLeft1 = 150;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      extendBodyBehindAppBar: true,
-      floatingActionButton: FancyFab(
-          (ToDo newTask) async {
-            setState(() {
-              commonList[newTask.toDoProj] += 1;
-            });
-            final int id = await DatabaseHelper.instance.insertTask(newTask);
-            newTask.changeToDoID = id;
-          },
-          proj,
-          colors[indexOfColor],
-          context,
-          (Project p) {
-            setState(() {
-              _add(p);
-            });
-          }),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.list),
+        onPressed: () {
+          Navigator.of(context)
+              .push(
+                MaterialPageRoute(builder: (context) => AllProjPage()),
+              )
+              .then((value) => getFuture());
+        },
+      ),
       appBar: appBar,
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: height + appBar.preferredSize.height,
-        child: Container(
-          child: SafeArea(
-              child: isLoading
-                  ? Container(child: Center(child: CircularProgressIndicator()))
-                  : SizedBox(
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: isDrag ? locationLeft1 : width * 0.05,
-                            child: Draggable(
-                              axis: Axis.horizontal,
-                              child: Container(
-                                height: height * 5 / 18,
-                                width: wForCard,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      ScaleRoute(
-                                          page: SecondRoute(
-                                              proj[index],
-                                              colors[indexOfColor][0],
-                                              width, (ToDo p) {
-                                        setState(() {
-                                          commonList[p.toDoProj] -= 1;
-                                        });
-                                        dbHelper.delete(p.toDoID, 'toDo');
-                                      })),
-                                    );
-                                  },
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    child: ListOfTasks(
-                                        proj[index],
-                                        colors[indexOfColor][0],
-                                        commonList[proj[index].getIdProj]),
-                                  ),
-                                ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height +
+                  appBar.preferredSize.height,
+              child: Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height) *
+                    0.8,
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final n = items[index];
+                    final item = items[index].toDoName;
+                    return Dismissible(
+                      secondaryBackground: Container(
+                        color: colorsForImportance[0],
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(Icons.delete, color: Colors.white),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text('Сделано',
+                                    style: TextStyle(color: Colors.white)),
                               ),
-                              feedback: Container(
-                                height: height * 5 / 18,
-                                width: wForCard,
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  child: ListOfTasks(
-                                      proj[index],
-                                      colors[indexOfColor][0],
-                                      commonList[proj[index].getIdProj]),
-                                ),
-                              ),
-                              childWhenDragging: Container(),
-                              onDragEnd: (drag) {
-                                double change = drag.offset.dx;
-                                if (change > wForCard / 2) {
-                                  setState(() {
-                                    changeIndexForProjectRight();
-                                  });
-                                }
-                                if (change < -wForCard / 2) {
-                                  setState(() {
-                                    changeIndexForProjectLeft();
-                                  });
-                                }
-                              },
-                            ),
+                            ],
                           ),
-                          Positioned(
-                            top: height / 3,
-                            left: width * 0.05,
-                            height: height / 2,
-                            width: wForCard,
-                            child: Container(
-                              child: Column(
+                        ),
+                      ),
+                      background: Container(
+                        color: colorsForImportance[0],
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(Icons.delete, color: Colors.white),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text('Сделано',
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      key: UniqueKey(),
+                      onDismissed: (direction) {
+                        DatabaseHelper.instance.delete(n.toDoID, 'toDo');
+                        setState(() {
+                          items.removeAt(index);
+                        });
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Задача '$item' удалена")));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 15, left: 20),
+                        child: Container(
+                          // width: widget.width * 0.9,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
                                 children: [
-                                  Align(
-                                    child: lstForUp[0],
-                                    alignment: Alignment.centerLeft,
+                                  GestureDetector(
+                                    onTap: () {
+                                      DatabaseHelper.instance
+                                          .delete(n.toDoID, 'toDo');
+                                      setState(() {
+                                        items.removeAt(index);
+                                      });
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "Задача '$item' удалена")));
+                                    },
+                                    child: Icon(Icons.done),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(n.toDoName,
+                                            style: TextStyle(fontSize: 18)),
+                                        Align(
+                                            alignment: Alignment.bottomLeft,
+                                            child: Text(
+                                              DateFormat('HH:mm')
+                                                      .format(n.toDoDate) +
+                                                  ', ' +
+                                                  weekDay(n.toDoDate) +
+                                                  ' ' +
+                                                  DateFormat('dd.MM')
+                                                      .format(n.toDoDate),
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                              textAlign: TextAlign.left,
+                                            )),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
+                              n.toDoImportant >= 1
+                                  ? Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 15.0),
+                                      child: Icon(Icons.circle,
+                                          color: colorsForImportance[
+                                              n.toDoImportant],
+                                          size: 12),
+                                    )
+                                  : Container()
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    )),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: colors[indexOfColor]),
-          ),
-        ),
-      ),
+                    );
+                  },
+                ),
+              ),
+            ),
     );
   }
 }

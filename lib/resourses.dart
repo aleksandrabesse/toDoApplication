@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 String getTask(int i) {
   String current = ' task';
-  if (i % 10 == 1) {
+  if (i % 10 == 1 && i != 11) {
     current = ' задача';
-  } else if (i % 10 == 2 || i % 10 == 3 || i % 10 == 4)
+  } else if ((i % 10 == 2 || i % 10 == 3 || i % 10 == 4) && i>=21)
     current = ' задачи';
   else
     current = ' задач';

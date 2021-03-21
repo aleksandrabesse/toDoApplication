@@ -146,8 +146,7 @@ class _SecondRouteState extends State<SecondRoute> {
                     Container(
                       height: (MediaQuery.of(context).size.height -
                               appBar.preferredSize.height) *
-                          0.5,
-                      // width: MediaQuery.of(context).size.width * 0.9,
+                          0.8,
                       child: ListView.builder(
                         itemCount: items.length,
                         itemBuilder: (context, index) {
@@ -196,6 +195,7 @@ class _SecondRouteState extends State<SecondRoute> {
                               setState(() {
                                 items.removeAt(index);
                                 count -= 1;
+                                text = count.toString() + getTask(count);
                               });
 
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -219,6 +219,8 @@ class _SecondRouteState extends State<SecondRoute> {
                                             setState(() {
                                               count -= 1;
                                               items.removeAt(index);
+                                              text = count.toString() +
+                                                  getTask(count);
                                             });
 
                                             ScaffoldMessenger.of(context)
@@ -261,10 +263,14 @@ class _SecondRouteState extends State<SecondRoute> {
                                       ],
                                     ),
                                     n.toDoImportant >= 1
-                                        ? Icon(Icons.circle,
-                                            color: colorsForImportance[
-                                                n.toDoImportant],
-                                            size: 12)
+                                        ? Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 15.0),
+                                            child: Icon(Icons.circle,
+                                                color: colorsForImportance[
+                                                    n.toDoImportant],
+                                                size: 12),
+                                          )
                                         : Container()
                                   ],
                                 ),
