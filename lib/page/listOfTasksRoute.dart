@@ -66,39 +66,39 @@ class _SecondRouteState extends State<SecondRoute> {
       iconTheme: Theme.of(context).iconTheme,
       textTheme: Theme.of(context).textTheme,
       elevation: 0.0,
-      actions: [
-        Builder(
-          builder: (context) => IconButton(
-            icon: Icon(Icons.filter_list),
-            onPressed: () => Scaffold.of(context).openEndDrawer(),
-            tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-          ),
-        ),
-      ],
+      // actions: [
+      //   Builder(
+      //     builder: (context) => IconButton(
+      //       icon: Icon(Icons.filter_list),
+      //       onPressed: () => Scaffold.of(context).openEndDrawer(),
+      //       tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+      //     ),
+      //   ),
+      // ],
     );
 
     return Scaffold(
-      endDrawer: Container(
-        width: MediaQuery.of(context).size.width / 3,
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              UserAccountsDrawerHeader(
-                accountName: Text("xyz"),
-                accountEmail: Text("xyz@gmail.com"),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Text("xyz"),
-                ),
-              ),
-              ListTile(
-                title: new Text("All Inboxes"),
-                leading: new Icon(Icons.mail),
-              ),
-            ],
-          ),
-        ),
-      ),
+      // endDrawer: Container(
+      //   width: MediaQuery.of(context).size.width / 3,
+      //   child: Container(
+      //     child: Column(
+      //       children: <Widget>[
+      //         UserAccountsDrawerHeader(
+      //           accountName: Text("xyz"),
+      //           accountEmail: Text("xyz@gmail.com"),
+      //           currentAccountPicture: CircleAvatar(
+      //             backgroundColor: Colors.white,
+      //             child: Text("xyz"),
+      //           ),
+      //         ),
+      //         ListTile(
+      //           title: new Text("All Inboxes"),
+      //           leading: new Icon(Icons.mail),
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
       appBar: appBar,
       body: isLoading
           ? CircularProgressIndicator()

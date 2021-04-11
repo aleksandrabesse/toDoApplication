@@ -30,7 +30,7 @@ class _AllProjPageState extends State<AllProjPage>
   bool isLoading = true;
   List<Text> lstForUp;
   int index = 0;
-  int indexOfColor = 0; //index for colors
+  int indexOfColor = 0; 
   void getFuture() async {
     proj.clear();
     commonList.clear();

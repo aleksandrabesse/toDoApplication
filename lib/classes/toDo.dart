@@ -23,6 +23,24 @@ class ToDo {
     else
       _project = 0;
   }
+
+    ToDo.fromMap(Map<String, dynamic> map) {
+    _id = map['id'];
+    _name = map['name'];
+    _important = map['important'];
+    _project = map['proj'];
+    _deadline = DateTime.parse(map['date']);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': _id,
+      'name': _name,
+      'important': _important,
+      'proj': _project,
+      'date': _deadline.toString()
+    };
+  }
   int get toDoProj {
     return _project;
   }
@@ -63,21 +81,5 @@ class ToDo {
     if (_important != n) if (_important >= 0 && _important <= 3) _important = n;
   }
 
-  ToDo.fromMap(Map<String, dynamic> map) {
-    _id = map['id'];
-    _name = map['name'];
-    _important = map['important'];
-    _project = map['proj'];
-    _deadline = DateTime.parse(map['date']);
-  }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': _id,
-      'name': _name,
-      'important': _important,
-      'proj': _project,
-      'date': _deadline.toString()
-    };
-  }
 }

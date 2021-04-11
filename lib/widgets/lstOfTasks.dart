@@ -67,7 +67,7 @@ class _ListOfTasksState extends State<ListOfTasks> {
                         ),
                       ),
                     ),
-                    IconButton(icon: Icon(Icons.settings), onPressed: () {})
+                    // IconButton(icon: Icon(Icons.settings), onPressed: () {})
                   ],
                 ),
                 Container(

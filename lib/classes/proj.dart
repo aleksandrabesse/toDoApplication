@@ -14,6 +14,18 @@ class Project {
     _color = color;
   }
 
+  Project.fromMap(Map<String, dynamic> map) {
+    _id = map['id'];
+    _name = map['name'];
+    _icon = map['icon'];
+    _color = map['color'];
+  }
+
+  Map<String, dynamic> toMap() {
+    return {'id': _id, 'name': _name, 'icon': _icon, 'color': _color};
+  }
+
+  
   int get getIdProj {
     return _id;
   }
@@ -46,14 +58,5 @@ class Project {
     _color = color;
   }
 
-  Project.fromMap(Map<String, dynamic> map) {
-    _id = map['id'];
-    _name = map['name'];
-    _icon = map['icon'];
-    _color = map['color'];
-  }
 
-  Map<String, dynamic> toMap() {
-    return {'id': _id, 'name': _name, 'icon': _icon, 'color': _color};
-  }
 }

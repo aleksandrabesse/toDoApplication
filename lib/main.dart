@@ -1,8 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:to_do_application/allProjPage.dart';
 import 'package:to_do_application/classes/toDo.dart';
+import 'package:to_do_application/push_notifications.dart';
 import 'package:to_do_application/widgets/lstOfTasks.dart';
 import 'package:to_do_application/widgets/floatingAction.dart';
 import 'package:intl/intl.dart';
@@ -117,116 +120,132 @@ class _MyHomePageState extends State<MyHomePage>
                   itemBuilder: (context, index) {
                     final n = items[index];
                     final item = items[index].toDoName;
-                    return Dismissible(
-                      secondaryBackground: Container(
-                        color: colorsForImportance[0],
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Icon(Icons.delete, color: Colors.white),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text('Сделано',
-                                    style: TextStyle(color: Colors.white)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      background: Container(
-                        color: colorsForImportance[0],
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(Icons.delete, color: Colors.white),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text('Сделано',
-                                    style: TextStyle(color: Colors.white)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      key: UniqueKey(),
-                      onDismissed: (direction) {
-                        DatabaseHelper.instance.delete(n.toDoID, 'toDo');
-                        setState(() {
-                          items.removeAt(index);
-                        });
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Задача '$item' удалена")));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 15, left: 20),
-                        child: Container(
-                          // width: widget.width * 0.9,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      //  padding: const EdgeInsets.only(top: 15, left: 20),
+                      child: Card(
+                        child: Dismissible(
+                          secondaryBackground: Container(
+                            color: colorsForImportance[0],
+                            child: Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      DatabaseHelper.instance
-                                          .delete(n.toDoID, 'toDo');
-                                      setState(() {
-                                        items.removeAt(index);
-                                      });
-
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  "Задача '$item' удалена")));
-                                    },
-                                    child: Icon(Icons.done),
-                                  ),
+                                  Icon(Icons.delete, color: Colors.white),
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 15),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(n.toDoName,
-                                            style: TextStyle(fontSize: 18)),
-                                        Align(
-                                            alignment: Alignment.bottomLeft,
-                                            child: Text(
-                                              DateFormat('HH:mm')
-                                                      .format(n.toDoDate) +
-                                                  ', ' +
-                                                  weekDay(n.toDoDate) +
-                                                  ' ' +
-                                                  DateFormat('dd.MM')
-                                                      .format(n.toDoDate),
-                                              style:
-                                                  TextStyle(color: Colors.grey),
-                                              textAlign: TextAlign.left,
-                                            )),
-                                      ],
-                                    ),
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text('Сделано',
+                                        style: TextStyle(color: Colors.white)),
                                   ),
                                 ],
                               ),
-                              n.toDoImportant >= 1
-                                  ? Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 15.0),
-                                      child: Icon(Icons.circle,
-                                          color: colorsForImportance[
-                                              n.toDoImportant],
-                                          size: 12),
-                                    )
-                                  : Container()
-                            ],
+                            ),
+                          ),
+                          background: Container(
+                            color: colorsForImportance[0],
+                            child: Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(Icons.delete, color: Colors.white),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text('Сделано',
+                                        style: TextStyle(color: Colors.white)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          key: UniqueKey(),
+                          onDismissed: (direction) {
+                            DatabaseHelper.instance.delete(n.toDoID, 'toDo');
+                            setState(() {
+                              items.removeAt(index);
+                            });
+
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Задача '$item' удалена")));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: Container(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          DatabaseHelper.instance
+                                              .delete(n.toDoID, 'toDo');
+                                          setState(() {
+                                            items.removeAt(index);
+                                          });
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      "Задача '$item' удалена")));
+                                        },
+                                        child: Icon(Icons.done),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 15),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(n.toDoName,
+                                                style: TextStyle(fontSize: 18)),
+                                            Align(
+                                                alignment: Alignment.bottomLeft,
+                                                child: Text(
+                                                  DateFormat('HH:mm')
+                                                          .format(n.toDoDate) +
+                                                      ', ' +
+                                                      weekDay(n.toDoDate) +
+                                                      ' ' +
+                                                      DateFormat('dd.MM')
+                                                          .format(n.toDoDate),
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                  textAlign: TextAlign.left,
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      // Padding(
+                                      //   padding:
+                                      //       const EdgeInsets.only(right: 15.0),
+                                      //   child: Icon(Icons.alarm),
+                                      // ),
+                                      n.toDoImportant >= 1
+                                          ? Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 15.0),
+                                              child: Icon(Icons.circle,
+                                                  color: colorsForImportance[
+                                                      n.toDoImportant],
+                                                  size: 12),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -238,3 +257,4 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 }
+
